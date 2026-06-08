@@ -6,15 +6,63 @@
 </head>
 <body>
     <h2>Login Page</h2>
-    <form action="/login" method="POST">
+    <!-- REMOVED action="/login" and added an ID to intercept the form submission -->
+    <form id="loginForm">
         <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+        <input type="text" id="username" name="username" required><br><br>
         
         <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required><br><br>
         
         <button type="submit">Login</button>
     </form>
+    <p id="error-message" style="color: red;"></p>
     <p style="color: gray;">Hint: Use admin/password123 or user/password123</p>
+
+    <script>
+        // CHANGE THIS URL to your deployed live backend URL (e.g., https://onrender.com)
+        // Keep it as http://localhost:3000 only for testing locally
+        const BACKEND_URL = "http://localhost:3000"; 
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevents the default 405 page redirect behavior
+
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            const errorElement = document.getElementById('error-message');
+
+            try {
+                // Send data using a modern AJAX request
+                const response = await fetch(`${BACKEND_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        username: usernameInput,
+                        password: passwordInput
+                    })
+                });
+
+                // If login redirects to dashboard or returns a page
+                if (response.redirected) {
+                    window.location.href = response.url; 
+                    return;
+                }
+
+                const resultText = await response.text();
+                if (resultText.includes("Invalid")) {
+                    errorElement.innerHTML = resultText;
+                } else {
+                    // Fallback redirect handling
+                    window.location.href = `${BACKEND_URL}/dashboard`;
+                }
+
+            } catch (err) {
+                console.error(err);
+                errorElement.innerText = "Cannot connect to the server backend.";
+            }
+        });
+    </script>
 </body>
 </html>
