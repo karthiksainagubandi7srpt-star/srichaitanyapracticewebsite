@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View MySQL Users</title>
+    <style>
+        table { width: 50%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        body {
+             background-color: aqua;
+              }
+    </style>
+</head>
+<body>
+    <h2>Registered Users List</h2>
+    <button id="loadUsers">Refresh List</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>gender</th>
+                <th>contactNo</th>
+                <th>score10th</th>
+                <th>board</th>
+                <th>address</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Data will be loaded here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchUsers() {
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+            try {
+                // Fetch data from the Node.js backend server
+                const response = await fetch('http://localhost:3000/users');
+                const users = await response.json();
+
+                tableBody.innerHTML = ''; // Clear loading message
+
+                // Loop through the data and create table rows
+                users.forEach(user => {
+                    const row = `<tr>
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td>${user.age}</td>
+                        <td>${user.gender}</td>
+                        <td>${user.contactNo}</td>
+                        <td>${user.score10th}</td>
+                        <td>${user.board}</td>
+                        <td>${user.address}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                tableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
+            }
+        }
+
+        // Load data immediately on page load
+        window.addEventListener('DOMContentLoaded', fetchUsers);
+        
+        // Reload data when clicking the refresh button
+        document.getElementById('loadUsers').addEventListener('click', fetchUsers);
+    </script>
+</body>
+</html>

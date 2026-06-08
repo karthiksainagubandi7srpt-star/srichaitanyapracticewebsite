@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User Details</title>
+</head>
+<body>
+    <h2>Edit User Profile</h2>
+    
+    <!-- Step 1: Find the User -->
+    <div id="searchSection">
+        <label for="searchId">Enter User ID to Edit:</label>
+        <input type="number" id="searchId" required>
+        <button id="fetchBtn">Load User</button>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Step 2: Edit Form (Hidden until data is loaded) -->
+    <form id="editForm" style="display: none;">
+        <input type="hidden" id="userId">
+        
+        <label>Username:</label><br>
+        <input type="text" id="username" required><br><br>
+        
+        <label>Email:</label><br>
+        <input type="email" id="email" required><br><br>
+        
+        <label>Age:</label><br>
+        <input type="tel" id="age" maxlength="2" required><br><br>
+
+        <label>Gender:</label><br>
+        <input type="text" id="gender" required><br><br>
+
+        <label>Contact no:</label><br>
+        <input type="tel" id="contactNo" maxlength="10" pattern="[0-9]{10}" required><br><br>
+
+        <label>Score10th:</label><br>
+        <input type="number" id="score10th" required><br><br>
+
+        <label>Board:</label><br>
+        <input type="text" id="board" required><br><br>
+
+        <label>Address:</label><br>
+        <input type="text" id="address" required><br><br>
+                
+        <button type="submit">Save Changes</button>
+
+        <!-- FIX 1: Added type="button" to prevent form submission -->
+        <button type="button" id="deletebtn">Delete Data</button>
+    </form>
+
+    <p id="message" style="font-weight: bold;"></p>
+
+    <script>
+        const API_URL = 'http://localhost:3000/users';
+
+        // 1. Fetch user data by ID
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            const id = document.getElementById('searchId').value;
+            const msg = document.getElementById('message');
+            if (!id) return msg.innerText = "Please enter an ID.";
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error('User not found.');
+                }
+
+                const user = await response.json();
+                
+                // Populate the hidden form with database data
+                document.getElementById('userId').value = user.id;
+                document.getElementById('username').value = user.username;
+                document.getElementById('email').value = user.email;
+                document.getElementById('age').value = user.age;
+                document.getElementById('gender').value = user.gender;
+                document.getElementById('contactNo').value = user.contactNo;
+                document.getElementById('score10th').value = user.score10th;
+                document.getElementById('board').value = user.board;
+                document.getElementById('address').value = user.address;
+                
+                // Show form, clear error messages
+                document.getElementById('editForm').style.display = 'block';
+                msg.innerText = `Loaded profile for ID: ${user.id}`;
+            } catch (error) {
+                msg.innerText = error.message;
+                document.getElementById('editForm').style.display = 'none';
+            }
+        });
+
+        // 2. Submit the updated data
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const contactNo = document.getElementById('contactNo').value;
+            const score10th = document.getElementById('score10th').value;
+            const board = document.getElementById('board').value;
+            const address = document.getElementById('address').value;
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, age, gender, contactNo, score10th, board, address })
+                });
+
+                const result = await response.json();
+                document.getElementById('message').innerText = result.message;
+            } catch (error) {
+                document.getElementById('message').innerText = 'Failed to update record.';
+            }
+        });
+
+        // 3. Delete the selected user Data
+        document.getElementById('deletebtn').addEventListener('click', async () => {
+            // FIX 2: Target the confirmed loaded ID, not the loose search box input
+            const id = document.getElementById('userId').value; 
+            const msg = document.getElementById('message');
+            if (!id) return msg.innerText = "No user loaded to delete.";
+
+            if (!confirm(`Are you sure you want to permanently delete user ID: ${id}?`)) return;
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Deletion failed.');
+                }
+                
+                // FIX 3: Display the message explicitly sent by your Express API backend
+                msg.innerText = result.message; 
+                
+                // Reset form states and clean the screen
+                document.getElementById('editForm').reset();
+                document.getElementById('editForm').style.display = 'none';
+                document.getElementById('searchId').value = '';
+            } catch (error) {
+                msg.innerText = error.message;
+            }
+        });
+    </script>
+</body>
+</html>

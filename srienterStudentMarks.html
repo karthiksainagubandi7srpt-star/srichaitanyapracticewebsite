@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter Student Marks</title>
+    <style>
+    body   {
+                background-color: aqua;
+               }
+    </style>
+</head>
+<body>
+    <h2>Enter Id</h2>
+    
+    <!-- Step 1: Find the User -->
+    <div id="searchSection">
+        <label for="searchId">Enter User ID to Edit:</label>
+        <input type="number" id="searchId" required>
+        <button id="fetchBtn">Load User</button>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Step 2: Edit Form (Hidden until data is loaded) -->
+    <form id="editForm" style="display: none;">
+        <input type="hidden" id="userId">
+
+        <label>first_table_name</label>
+        <input type="text" id="studentName" required><br><br>
+            
+        <label>Marks:</label><br>
+        <input type="number" id="marks" required><br><br>
+        
+        
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <p id="message" style="font-weight: bold;"></p>
+
+    <script>
+        const API_URL = 'http://localhost:3000/marks';
+
+        // 1. Fetch user data by ID
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            const id = document.getElementById('searchId').value;
+            const msg = document.getElementById('message');
+            if (!id) return msg.innerText = "Please enter an ID.";
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error('User not found.');
+                }
+
+                const user = await response.json();
+                
+                // Populate the hidden form with database data
+                document.getElementById('userId').value = user.first_table_id;
+                document.getElementById('studentName').value = user.first_table_name;
+                document.getElementById('marks').value = user.studentmarks;
+                
+                // Show form, clear error messages
+                document.getElementById('editForm').style.display = 'block';
+                msg.innerText = `Loaded profile for ID: ${user.first_table_id}`;
+            } catch (error) {
+                msg.innerText = error.message;
+                document.getElementById('editForm').style.display = 'none';
+            }
+        });
+
+// 2. Submit the updated data
+document.getElementById('editForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // 1. Get the ID and the marks value from your form inputs
+    const id = document.getElementById('userId').value;
+    const marks = document.getElementById('marks').value; 
+
+    try {
+        
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ marks }) 
+        });
+
+        const result = await response.json();
+        document.getElementById('message').innerText = result.message;
+    } catch (error) {
+        document.getElementById('message').innerText = 'Failed to update record.';
+    }
+});
+    </script>
+</body>
+</html>

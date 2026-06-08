@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body   {
+            background-color: aqua;
+            background-repeat: no-repeat;
+            background-size: 40%;
+            background-attachment: fixed;
+            background-position: center;
+           }
+ .custom-image {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 200px;   /* Distance from the top border of the parent */
+            left: 500px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 0px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }            
+ .tilt-img {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+           
+  }
+  /* Moves the image slightly up and right when hovered */
+  .tilt-img:hover {
+    transform: translate(20px, -20px) rotate(45deg);
+               
+  }
+</style>            
+    <h2 align="center">WELCOME TO SRI CHAITANYA COLLEGE</h2>
+    <img src="srichaitanyalogo.jpg" class="tilt-img" style="float: right; margin-right: 450px;" alt="logo" >
+</body>
+</html>

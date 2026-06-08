@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View MySQL Users</title>
+    <style>
+        table { width: 50%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        body {
+              background-color: lightblue;
+              }
+    </style>
+</head>
+<body>
+    <h2>Students Rank List</h2>
+    <button id="loadsecond_table">Refresh List</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Marks</th>
+                <th>ID</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- Data will be loaded here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchsecond_table() {
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+            try {
+                // Fetch data from the Node.js backend server
+                const response = await fetch('http://localhost:3000/marks');
+                const users = await response.json();
+
+                tableBody.innerHTML = ''; // Clear loading message
+
+                // Loop through the data and create table rows
+                users.forEach(user => {
+                    const row = `<tr>
+                        <td>${user.calculated_rank}</td>
+                        <td>${user.first_table_name}</td>
+                        
+                        <td>${user.studentmarks}</td>
+                        <td>${user.first_table_id}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                tableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
+            }
+        }
+
+        // Load data immediately on page load
+        window.addEventListener('DOMContentLoaded', fetchsecond_table);
+
+        // Reload data when clicking the refresh button
+        document.getElementById('loadsecond_table').addEventListener('click', fetchsecond_table);
+    </script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<html>
+     <head>
+        <meta charset="UTF-8">
+        <title> Insert User to MySQL </title>
+        <style>
+        body   {
+                background-color: aqua;
+               }
+       .submit{
+               height:40px;
+               width:140px;
+               border:none;
+               border-radius:10px;
+               cursor:pointer;}
+       /* Hover state: Styles the look during mouseover */
+       .submit:hover{
+                     color: white;
+                     background-color: green;
+          }
+      .text {height:30px;
+             width:200px;
+             border-color:black;
+             border-radius:10px;
+             margin:7px;
+             cursor:pointer;           
+             position:static; 
+             }
+      .text:hover{
+                  background-color:navyblue;
+                 }
+      /* 1. The parent container MUST have position: relative */
+            .page-container {
+                             position: relative;
+                             width: 100%;
+                             height: 500px;
+                             background-color: #f0f0f0;
+                             /*border: 2px dashed #ccc;*/
+                             }
+      /* 2. The text box uses position: absolute */
+           .custom-tname {
+                          position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 50px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+            .custom-name {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 50px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 100px;
+        }
+       .custom-tage {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 100px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+            .custom-age {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 100px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+            }
+        .custom-email {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 150px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+        .custom-temail {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 150px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+ .custom-image {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 20px;   /* Distance from the top border of the parent */
+            left: 500px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 0px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }            
+      .custom-gender {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 200px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 100px;
+        }            
+        .custom-contact {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 250px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+        .custom-tcontact{
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 250px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+        .custom-male {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 200px;   /* Distance from the top border of the parent */
+            left: 260px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-tmale{
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 200px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-female {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 200px;   /* Distance from the top border of the parent */
+            left: 380px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-tfemale{
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 200px;   /* Distance from the top border of the parent */
+            left: 300px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-10 {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 300px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+        .custom-t10 {           
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 300px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }            
+      .custom-board {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 350px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 100px;
+        }            
+        .custom-state {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 350px;   /* Distance from the top border of the parent */
+            left: 260px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-tstate{
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 350px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-cbse {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 350px;   /* Distance from the top border of the parent */
+            left: 380px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-tcbse{
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 350px;   /* Distance from the top border of the parent */
+            left: 300px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 20px;
+        }
+        .custom-address {
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 400px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }
+        .custom-taddress {           
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 400px;   /* Distance from the top border of the parent */
+            left: 200px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            width: 250px;
+        }            
+        .custom-button {           
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 480px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 15px;
+            width: 150px;
+            cursor:pointer;
+        }
+        .custom-button:hover {
+                color: white;
+                background-color: green;
+        }            
+        .custom-p {           
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 430px;   /* Distance from the top border of the parent */
+            left: 80px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 700px;
+        }            
+       .custom-message {           
+            position: absolute;
+            
+            /* Coordinates to place it exactly where you want */
+            top: 480px;   /* Distance from the top border of the parent */
+            left: 300px;  /* Distance from the left border of the parent */
+            
+            /* Visual styling for the text box */
+            padding: 10px;
+            font-size: 16px;
+            width: 700px;
+        }            
+       
+  
+            
+
+</style>
+     </head>
+     <body bgcolor="white">
+             <h1>APPLICATION FORM</h1>
+         <form id="userForm">
+    <b>
+    <label class="custom-name" for="user-name">NAME</label>
+    <input type="text" id="user-name" class="custom-tname" placeholder="ENTER NAME" required><br><br>
+
+    <label class="custom-age" for="user-age">AGE</label>
+    <input type="tel" id="user-age" class="custom-tage" placeholder="ENTER AGE" maxlength="2" required><br><br>
+
+    <label class="custom-email" for="user-email">EMAIL</label>
+    <input type="email" id="user-email" class="custom-temail" placeholder="ENTER EMAIL" required><br><br>
+
+    <label class="custom-gender">GENDER</label>
+    <input type="radio" id="male" name="gender" value="male" class="custom-male" required>
+    <label for="male" class="custom-tmale">Male</label>
+    <input type="radio" id="female" name="gender" value="female" class="custom-female" required>
+    <label for="female" class="custom-tfemale">Female</label><br><br>
+
+    <label class="custom-contact" for="user-contact-no">CONTACT NO.</label>
+    <input type="tel" id="user-contact-no" class="custom-tcontact" placeholder="ENTER CONTACT NO." maxlength="10" required><br><br>
+
+    <label class="custom-10" for="user-10th-score">10TH SCORE</label>
+    <input type="text" id="user-10th-score" class="custom-t10" placeholder="ENTER 10TH SCORE" required><br><br>
+
+    <label class="custom-board">BOARD</label>
+    <input type="radio" id="state" name="board" value="state" class="custom-state" required>
+    <label for="state" class="custom-tstate">State</label>
+    <input type="radio" id="cbse" name="board" value="cbse" class="custom-cbse" required>
+    <label for="cbse" class="custom-tcbse">Cbse</label><br><br>
+
+    <label class="custom-address" for="user-address">ADDRESS</label>
+    <input type="text" id="user-address" class="custom-taddress" placeholder="ENTER ADDRESS" required><br><br>
+
+    <button type="submit" class="custom-button"> Submit </button>
+    <p class="custom-p"> ENSURE THAT THE GIVEN INFORMATION IS CORRECT </p>
+    <img class="custom-image" src="srichaitanyalogo.jpg">
+    
+</form>
+
+<p id="message" class="custom-message"></p></b>
+
+<script>
+document.getElementById('userForm').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevent page reload
+
+    // Gather all form values securely
+    const payload = {
+        username: document.getElementById('user-name').value,
+        age: document.getElementById('user-age').value,
+        email: document.getElementById('user-email').value,
+        gender: document.querySelector('input[name="gender"]:checked').value,
+        contactNo: document.getElementById('user-contact-no').value,
+        score10th: document.getElementById('user-10th-score').value,
+        board: document.querySelector('input[name="board"]:checked').value,
+        address: document.getElementById('user-address').value
+    };
+
+    try {
+        // Send complete data payload to your Node.js backend
+        const response = await fetch('http://localhost:3000/add-user', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        document.getElementById('message').innerText = result.message;
+    } catch (error) {
+        document.getElementById('message').innerText = 'Error connecting to server.';
+    }
+});
+</script>
+
+</body> 
+</html>
