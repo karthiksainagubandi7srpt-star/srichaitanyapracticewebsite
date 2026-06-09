@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registered Records | SRI CHAITANYA COLLEGES</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f9;
+            padding: 30px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #0d47a1;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .title {
+            color: #0d47a1;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .refresh-btn {
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .refresh-btn:hover {
+            background-color: #1565c0;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0d47a1;
+            color: white;
+            padding: 14px 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+        }
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        tr:hover {
+            background-color: #edf2f7;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .role-admin { background-color: #fee2e2; color: #ef4444; }
+        .role-user { background-color: #e0f2fe; color: #0284c7; }
+        
+        #statusText {
+            margin-top: 15px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <h2 class="title">SRI CHAITANYA COLLEGES - Registered Database Users</h2>
+        <button class="refresh-btn" onclick="fetchTableData()">🔄 Refresh Logs</button>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Record ID</th>
+                    <th>Profile Username</th>
+                    <th>Assigned Role Type</th>
+                    <th>Creation Date Stamp</th>
+                </tr>
+            </thead>
+            <tbody id="databaseTableBody">
+                <!-- Javascript will inject data rows here dynamically -->
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #777; padding: 30px;">Loading database records...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <p id="statusText"></p>
+</div>
+
+<script>
+    const RENDER_URL = 'https://onrender.com';
+
+    async function fetchTableData() {
+        const tableBody = document.getElementById('databaseTableBody');
+        const statusText = document.getElementById('statusText');
+        
+        try {
+            const response = await fetch(`${RENDER_URL}/api/view-users`);
+            const data = await response.json();
+
+            if (data.success) {
+                tableBody.innerHTML = ''; // Wipe out placeholder rows
+                statusText.style.color = 'green';
+                statusText.textContent = 'Data synchronized successfully.';
+
+                if(data.users.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center;">No profiles found inside the table.</td></tr>`;
+                    return;
+                }
+
+                // Render out database table loops
+                data.users.forEach(user => {
+                    const row = document.createElement('tr');
+                    
+                    // Format creation timestamp
+                    const dateFormatted = new Date(user.created_at).toLocaleString();
+                    
+                    // Match CSS structural badges based on account authorization states
+                    const badgeClass = user.role === 'admin' ? 'role-admin' : 'role-user';
+
+                    row.innerHTML = `
+                        <td><strong>#${user.id}</strong></td>
+                        <td>${user.username}</td>
+                        <td><span class="role-badge ${badgeClass}">${user.role}</span></td>
+                        <td>${dateFormatted}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                statusText.style.color = 'red';
+                statusText.textContent = 'Server response error: ' + data.message;
+            }
+        } catch (error) {
+            console.error('Fetch execution error:', error);
+            statusText.style.color = 'red';
+            statusText.textContent = 'Network communication failure connecting to Render.';
+        }
+    }
+
+    // Initialize auto-fetch processing as soon as page component frames assemble
+    window.onload = fetchTableData;
+</script>
+
+</body>
+</html>
