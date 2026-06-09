@@ -19,7 +19,7 @@
         <label>Password:</label><br>
         <input type="password" id="password" required><br><br>
         
-        <button type="button" onclick="fetchData()" >Login</button>
+        <button type="button" onclick="loginUser()" >Login</button>
     </form>
     <p style="color: gray;">Hint: Use admin/password123 or user/password123</p>
 
@@ -39,33 +39,51 @@
             loginUser(userVal, passVal);
         }
 
-        async function loginUser(username, password) {
-            try {
-                // FIXED: Changed '/login' to use BACKEND_URL since your backend is cross-origin
-                const response = await fetch(`${BACKEND_URL}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password }),
-                    credentials: 'include'
-                });
+        async function loginUser() {
+    // 1. Get the HTML elements by their IDs
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
 
-                const data = await response.json(); 
+    // 2. Extract the text values entered by the user
+    const username = usernameInput.value;
+    const password = passwordInput.value;
 
-                if (response.ok && data.success) {
-                    console.log(data.message); 
-                    alert(data.message); // Notifies user of successful login
-                    // If you have a dashboard, redirect here (e.g., window.location.href = '/dashboard')
-                } else {
-                    console.error("Login failed:", data.message); 
-                    alert(data.message);
-                }
-            } catch (error) {
-                console.error("Network error occurred:", error);
-                alert("Failed to connect to login server.");
-            }
+    // 3. (Optional validation) Stop early if fields are empty
+    if (!username || !password) {
+        alert("Please enter both a username and password.");
+        return;
+    }
+
+    // 4. Define your live backend URL
+    //const BACKEND_URL = "https://onrender.com";
+
+    try {
+        // 5. Make the network request to your login endpoint
+        const response = await fetch(`${BACKEND_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include' // Allows cookies and session tracking
+        });
+
+        // 6. Read the JSON response data from the server
+        const data = await response.json(); 
+
+        if (response.ok && data.success) {
+            console.log("Success:", data.message);
+            alert(data.message); // Displays "Login successful!"
+            // Redirect your user here if needed: window.location.href = '/dashboard';
+        } else {
+            console.error("Login failed:", data.message); 
+            alert(data.message); // Displays "Invalid username or password."
         }
+    } catch (error) {
+        console.error("Network error occurred:", error);
+        alert("Failed to connect to login server.");
+    }
+}
 
         function fetchData() {
             const messageBox = document.getElementById('message-box');
