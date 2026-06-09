@@ -30,32 +30,30 @@
     <div id="message-box">Click the button to load live data...</div>
 
     <script>
-        function submitLogin() {
-    // Corrected the broken typo in your original URL string (.onrender.com)
-    const BACKEND_URL = "https://studentbackend-zzbp.onrender.com";
+       async function loginUser(username, password) {
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Fix #1
+            },
+            body: JSON.stringify({ username, password }), // Fix #2
+            credentials: 'include' // Fix #3
+        });
 
-    // Grab actual values from the input elements
-    const usernameInput = document.getElementById('username').value;
-    const passwordInput = document.getElementById('password').value;
+        // Fix #4: Read the JSON regardless of status code to get the message
+        const data = await response.json(); 
 
-    fetch(`${BACKEND_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: usernameInput, password: passwordInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Checks if your server.js returns a successful login status
-        if (data.success) {
-            window.location.href = "dashboard.html"; 
+        if (response.ok && data.success) {
+            console.log(data.message); // "Login successful!"
+            // Do your frontend redirect here (e.g., window.location.href = '/dashboard')
         } else {
-            alert(data.message || "Invalid credentials");
+            console.error("Login failed:", data.message); // "Invalid username or password."
+            alert(data.message);
         }
-    })
-    .catch(err => {
-        console.error("Login failed:", err);
-        alert("Could not connect to the authentication server.");
-    });
+    } catch (error) {
+        console.error("Network error occurred:", error);
+    }
 }
 
         function fetchData() {
