@@ -28,6 +28,26 @@
     <div id="message-box">Click the button to load live data...</div>
 
     <script>
+        function submitLogin() {
+    const BACKEND_URL = "https://studentbackend-zzbponrender.com";
+
+    fetch(`${BACKEND_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'yourUsername', password: 'yourPassword' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // The frontend securely moves the user to your separate dashboard file
+            window.location.href = "dashboard.html"; 
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(err => console.error("Login failed:", err));
+}
+
         function fetchData() {
             const messageBox = document.getElementById('message-box');
             messageBox.innerText = "Loading data...";
