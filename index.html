@@ -39,20 +39,33 @@
             loginUser(userVal, passVal);
         }
 
-        async function loginUser() {
-    // 1. Get the HTML elements by their IDs
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
+       async function loginUser() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-    // 2. Extract the text values entered by the user
-    const username = usernameInput.value;
-    const password = passwordInput.value;
+    const BACKEND_URL = "https://onrender.com";
 
-    // 3. (Optional validation) Stop early if fields are empty
-    if (!username || !password) {
-        alert("Please enter both a username and password.");
-        return;
+    try {
+        const response = await fetch(`${BACKEND_URL}/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include'
+        });
+
+        const data = await response.json(); 
+        
+        // This will successfully alert the message from your server!
+        alert("Server says: " + data.message); 
+
+    } catch (error) {
+        console.error("Network error:", error);
+        alert("Failed to connect to login server. Check browser console!");
     }
+}
+
 
     // 4. Define your live backend URL
     //const BACKEND_URL = "https://onrender.com";
