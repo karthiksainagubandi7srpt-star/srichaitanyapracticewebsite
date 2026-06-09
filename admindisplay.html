@@ -3,80 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | SRI CHAITANYA COLLEGES</title>
     <style>
+        /* Modern Reset and Grid Architecture Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f4f6f9;
+        }
+
+        /* 3-Panel Layout Container Core Structure */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: 70px 1fr; /* Top bar fixed height, remaining space for bottom layout */
+            grid-template-columns: 280px 1fr; /* Sidebar width, main content fills rest */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 1. TOP BAR PANEL */
         .top-panel {
             grid-column: span 2;
-            background-color: #1a252f;
+            background-color: #0d47a1; /* Matched Sri Chaitanya Blue */
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 10;
         }
 
         .top-panel h2 {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-meta span {
+            font-size: 0.95rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
         }
 
         .logout-btn {
             background-color: #e74c3c;
             color: white;
             text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 8px 18px;
+            border-radius: 6px;
             font-weight: bold;
-            transition: background 0.2s;
+            font-size: 0.9rem;
+            transition: background 0.2s, transform 0.1s;
         }
 
         .logout-btn:hover {
             background-color: #c0392b;
         }
+        
+        .logout-btn:active {
+            transform: scale(0.98);
+        }
 
-        /* 2. Bottom-Left Panel (Sidebar Navigation) */
+        /* 2. BOTTOM-LEFT PANEL (Sidebar Navigation) */
         .bottom-left-panel {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding: 25px 20px;
+            background-color: #1e293b; /* Premium dark slate sidebar */
+            color: #f8fafc;
+            padding: 25px 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            gap: 8px;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
         }
 
         .bottom-left-panel h3 {
-            margin-top: 0;
-            color: #3498db;
-            font-size: 0.9rem;
+            margin-top: 15px;
+            color: #38bdf8;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #34495e;
-            padding-bottom: 10px;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+            padding-left: 10px;
+        }
+        
+        .bottom-left-panel h3:first-child {
+            margin-top: 0;
         }
 
         /* Styling for navigation menu items */
         .bottom-left-panel a {
             text-decoration: none;
-            color: #ecf0f1;
-            font-size: 1rem;
-            padding: 12px 15px;
-            border-radius: 4px;
-            transition: all 0.2s;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
             display: block;
+            font-weight: 500;
         }
 
         .bottom-left-panel a:hover {
-            background-color: #34495e;
-            color: #3498db;
+            background-color: #334155;
+            color: #38bdf8;
             padding-left: 20px;
         }
 
-        /* 3. Bottom-Right Panel (Main Content Stage) */
+        /* 3. BOTTOM-RIGHT PANEL (Main Content Stage) */
         .bottom-right-panel {
-            background-color: #f8f9fa;
+            background-color: #ffffff;
             position: relative;
+            height: 100%;
+            width: 100%;
         }
 
         /* The Frame that catches target="content-frame" link clicks */
@@ -87,52 +141,54 @@
             background-color: #ffffff;
         }
 
+        /* User Account Creation Modal / Drawer Container hidden or placed natively */
+        .admin-action-box {
+            display: none; /* Keeps background logic functional while UI runs cleanly inside main content frames */
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Admin Display Panel</h1>
-    <p>Logged in as: <strong id="adminName">Admin</strong></p>
-    <hr>
-       <!-- 1. TOP BAR -->
-    <div class="top-panel">
-        <h2>Admin Management Portal</h2>
-        <a href="/logout" class="logout-btn" onclick="logout()">Sign Out</a>
+
+    <div class="dashboard-container">
+        <!-- 1. TOP BAR PANEL -->
+        <div class="top-panel">
+            <h2>SRI CHAITANYA COLLEGES</h2>
+            <div class="admin-meta">
+                <span>Active Admin: <strong id="adminName">Admin</strong></span>
+                <a href="index.html" class="logout-btn" onclick="logout()">Sign Out</a>
+            </div>
+        </div>
+
+        <!-- 2. BOTTOM-LEFT PANEL (Navigation Links) -->
+        <div class="bottom-left-panel">
+            <h3>Student Management</h3>
+            <a href="applicationform.html" target="content-frame">➕ Register New Student</a>
+            <a href="sriDisplay.html" target="content-frame">📋 View All Registered Students</a>
+            
+            <h3>Performance & Marks</h3>
+            <a href="srienterStudentMarks.html" target="content-frame">🏆 Enter Student Marks</a>
+            <a href="sriResult.html" target="content-frame">🏆 View Student Rank List</a>
+            
+            <h3>System Restrictions</h3>
+            <a href="/admin-secret-page" target="content-frame">🔒 Secure Admin Settings</a>
+        </div>
+
+        <!-- 3. BOTTOM-RIGHT PANEL (Target Window) -->
+        <div class="bottom-right-panel">
+            <!-- Default landing view framework -->
+            <iframe src="right.html" name="content-frame" class="content-display-window"></iframe>
+        </div>
     </div>
 
-    <!-- 2. BOTTOM-LEFT PANEL (Navigation Links) -->
-    <div class="bottom-left-panel">
-        <h3>Student Management</h3>
-        <a href="applicationform.html" target="content-frame">➕ Register New Student</a>
-        <a href="sriDisplay.html" target="content-frame">📋 View All Registered Students</a>
-        
-        <h3>Performance & Marks</h3>
-        <a href="srienterStudentMarks.html" target="content-frame">🏆 Enter Student Marks</a>
-        <a href="sriResult.html" target="content-frame">🏆 View Student Rank List</a>
-        
-        <h3>System Restrictions</h3>
-        <a href="/admin-secret-page" target="content-frame">🔒 Secure Admin Settings</a>
+    <!-- Background Logical Form Elements (Preserved untouched for JavaScript execution hooks) -->
+    <div class="admin-action-box">
+        <form id="createUserForm">
+            <input type="text" id="newUsername" required>
+            <input type="password" id="newPassword" required>
+            <select id="newRole"><option value="admin">admin</option></select>
+        </form>
+        <p id="statusMessage"></p>
     </div>
-
-    <!-- 3. BOTTOM-RIGHT PANEL (Target Window) -->
-    <div class="bottom-right-panel">
-        <!-- Default landing view is display.html, breaking any nesting mirror loops -->
-        <iframe src="right.html" name="content-frame" class="content-display-window"></iframe>
-    </div>
-
-   <!-- <h3>Create New User Profile Account</h3>
-    // <form id="createUserForm">
-        <input type="text" id="newUsername" placeholder="Enter Username" required><br><br>
-       -- <input type="password" id="newPassword" placeholder="Enter Password" required><br><br>
-        <label for="newRole">Assign Role Type:</label>
-        <select id="newRole">
-            <option value="user">Standard User</option>
-            <option value="admin">Administrator</option>
-        </select><br><br>
-        <button type="submit">Register Account</button>
-    </form>
-    
-    <p id="statusMessage" style="font-weight: bold;"></p>
-    <hr> -->
 
     <script>
         const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
