@@ -3,39 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Repo Connect</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
-        #message-box { font-weight: bold; color: #4CAF50; font-size: 20px; margin-top: 20px; }
-    </style>
+    <title>Login</title>
 </head>
 <body>
-    <h2>Login Page</h2>
-    
-
-    <h1>Frontend Repository Page</h1>
-    <button onclick="fetchData()">Get Server Data</button>
-    
-    <div id="message-box">Click the button to load live data...</div>
+    <h2>Login Portal</h2>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required><br><br>
+        <input type="password" id="password" placeholder="Password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+    <p id="errorMessage" style="color: red;"></p>
 
     <script>
-        const BACKEND_URL = "https://studentbackend-zzbp.onrender.com"; 
+        // RENDER_URL: Replace with your actual deployed Render Web Service URL
+        const RENDER_URL = 'https://onrender.com';
 
-    
-        function fetchData() {
-            const messageBox = document.getElementById('message-box');
-            messageBox.innerText = "Loading data...";
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMessage');
 
-            fetch(`${BACKEND_URL}/api/message`)
-                .then(response => response.json())
-                .then(data => {
-                    messageBox.innerText = data.text;
-                })
-                .catch(error => {
-                    console.error("Error connecting:", error);
-                    messageBox.innerText = "Failed to connect to backend.";
+            try {
+                const response = await fetch(`${RENDER_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
                 });
-        }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to pages within the same GitHub Pages folder repository
+                    if (data.role === 'admin') {
+                        window.location.href = 'admindisplay.html';
+                    } else if (data.role === 'user') {
+                        window.location.href = 'userdisplay.html';
+                    }
+                } else {
+                    errorMsg.textContent = data.message || 'Login failed.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMsg.textContent = 'Could not connect to the authentication server.';
+            }
+        });
     </script>
 </body>
 </html>
