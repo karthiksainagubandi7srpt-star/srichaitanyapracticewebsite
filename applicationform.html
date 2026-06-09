@@ -435,6 +435,8 @@
 <p id="message" class="custom-message"></p></b>
 
 <script>
+       const response = await fetch(`${RENDER_URL}/api/view-users`);
+
 document.getElementById('userForm').addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent page reload
 
