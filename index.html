@@ -2,67 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Repo Connect</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        #message-box { font-weight: bold; color: #4CAF50; font-size: 20px; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <h2>Login Page</h2>
-    <!-- REMOVED action="/login" and added an ID to intercept the form submission -->
-    <form id="loginForm">
-        <label>Username:</label><br>
-        <input type="text" id="username" name="username" required><br><br>
-        
-        <label>Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-        
-        <button type="submit">Login</button>
-    </form>
-    <p id="error-message" style="color: red;"></p>
-    <p style="color: gray;">Hint: Use admin/password123 or user/password123</p>
+
+    <h1>Frontend Repository Page</h1>
+    <button onclick="fetchData()">Get Server Data</button>
+    
+    <div id="message-box">Click the button to load live data...</div>
 
     <script>
-        // CHANGE THIS URL to your deployed live backend URL (e.g., https://onrender.com)
-        // Keep it as http://localhost:3000 only for testing locally
-        const BACKEND_URL = "http://localhost:3000"; 
+        function fetchData() {
+            const messageBox = document.getElementById('message-box');
+            messageBox.innerText = "Loading data...";
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevents the default 405 page redirect behavior
+            // REPLACE THIS URL with your actual live Render Web Service URL from Part 1
+            const BACKEND_URL = "https://onrender.com"; 
 
-            const usernameInput = document.getElementById('username').value;
-            const passwordInput = document.getElementById('password').value;
-            const errorElement = document.getElementById('error-message');
-
-            try {
-                // Send data using a modern AJAX request
-                const response = await fetch(`${BACKEND_URL}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        username: usernameInput,
-                        password: passwordInput
-                    })
+            // Make the network request to your server's endpoint
+            fetch(`${BACKEND_URL}/api/message`)
+                .then(response => response.json())
+                .then(data => {
+                    // Update the HTML page with the text sent by your server.js file
+                    messageBox.innerText = data.text;
+                })
+                .catch(error => {
+                    console.error("Error connecting:", error);
+                    messageBox.innerText = "Failed to connect to backend.";
                 });
-
-                // If login redirects to dashboard or returns a page
-                if (response.redirected) {
-                    window.location.href = response.url; 
-                    return;
-                }
-
-                const resultText = await response.text();
-                if (resultText.includes("Invalid")) {
-                    errorElement.innerHTML = resultText;
-                } else {
-                    // Fallback redirect handling
-                    window.location.href = `${BACKEND_URL}/dashboard`;
-                }
-
-            } catch (err) {
-                console.error(err);
-                errorElement.innerText = "Cannot connect to the server backend.";
-            }
-        });
+        }
     </script>
 </body>
 </html>
