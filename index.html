@@ -11,15 +11,15 @@
 </head>
 <body>
     <h2>Login Page</h2>
-    <!-- FIXED: Calls handleFormSubmit() which correctly extracts the input values -->
-    <form id="loginForm" ">
+    <!-- Cleaned up form setup with your new button type -->
+    <form id="loginForm" onsubmit="event.preventDefault();">
         <label>Username:</label><br>
         <input type="text" id="username" required><br><br>
         
         <label>Password:</label><br>
         <input type="password" id="password" required><br><br>
         
-        <button type="button" onclick="loginUser()" >Login</button>
+        <button type="button" onclick="loginUser()">Login</button>
     </form>
     <p style="color: gray;">Hint: Use admin/password123 or user/password123</p>
 
@@ -29,75 +29,54 @@
     <div id="message-box">Click the button to load live data...</div>
 
     <script>
-        // Global definition for backend URL to keep it consistent
-        const BACKEND_URL = "https://studentbackend-zzbp.onrender.com"; 
+        const BACKEND_URL = "https://onrender.com"; 
 
-        // FIXED: New handler function to bridge the form event to the loginUser function
-        function handleFormSubmit() {
-            const userVal = document.getElementById('username').value;
-            const passVal = document.getElementById('password').value;
-            loginUser(userVal, passVal);
+        async function loginUser() {
+            console.log("Login button clicked!"); // Check your console for this log!
+            
+            // 1. Correctly get the input elements and values
+            const userField = document.getElementById('username');
+            const passField = document.getElementById('password');
+
+            if (!userField || !passField) {
+                alert("HTML input elements are missing IDs!");
+                return;
+            }
+
+            const username = userField.value;
+            const password = passField.value;
+
+            // 2. Validate empty inputs
+            if (!username || !password) {
+                alert("Please enter both a username and password.");
+                return;
+            }
+
+            try {
+                // 3. Fire the network request
+                const response = await fetch(`${BACKEND_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json(); 
+                
+                // 4. Handle the server data response
+                if (response.ok) {
+                    alert("Success! Server says: " + (data.message || data.text));
+                } else {
+                    alert("Server error: " + (data.message || "Failed"));
+                }
+
+            } catch (error) {
+                console.error("Network error details:", error);
+                alert("Failed to connect to login server. Please make sure your Render backend is updated and Live.");
+            }
         }
-
-       async function loginUser() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    const BACKEND_URL = "https://onrender.com";
-
-    try {
-        const response = await fetch(`${BACKEND_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password }),
-            credentials: 'include'
-        });
-
-        const data = await response.json(); 
-        
-        // This will successfully alert the message from your server!
-        alert("Server says: " + data.message); 
-
-    } catch (error) {
-        console.error("Network error:", error);
-        alert("Failed to connect to login server. Check browser console!");
-    }
-}
-
-
-    // 4. Define your live backend URL
-    //const BACKEND_URL = "https://onrender.com";
-
-    try {
-        // 5. Make the network request to your login endpoint
-        const response = await fetch(`${BACKEND_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password }),
-            credentials: 'include' // Allows cookies and session tracking
-        });
-
-        // 6. Read the JSON response data from the server
-        const data = await response.json(); 
-console.log("Success:", data.message);
-
-        if (response.ok && data.success) {
-            console.log("Success:", data.message);
-            alert(data.message); // Displays "Login successful!"
-            // Redirect your user here if needed: window.location.href = '/dashboard';
-        } else {
-            console.error("Login failed:", data.message); 
-            alert(data.message); // Displays "Invalid username or password."
-        }
-    } catch (error) {
-        console.error("Network error occurred:", error);
-        alert("Failed to connect to login server.");
-    }
-}
 
         function fetchData() {
             const messageBox = document.getElementById('message-box');
