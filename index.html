@@ -70,6 +70,7 @@
 
         // 6. Read the JSON response data from the server
         const data = await response.json(); 
+console.log("Success:", data.message);
 
         if (response.ok && data.success) {
             console.log("Success:", data.message);
