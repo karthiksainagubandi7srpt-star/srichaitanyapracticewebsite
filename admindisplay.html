@@ -4,6 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <style>
+        .top-panel {
+            grid-column: span 2;
+            background-color: #1a252f;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .top-panel h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* 2. Bottom-Left Panel (Sidebar Navigation) */
+        .bottom-left-panel {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .bottom-left-panel h3 {
+            margin-top: 0;
+            color: #3498db;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #34495e;
+            padding-bottom: 10px;
+        }
+
+        /* Styling for navigation menu items */
+        .bottom-left-panel a {
+            text-decoration: none;
+            color: #ecf0f1;
+            font-size: 1rem;
+            padding: 12px 15px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            display: block;
+        }
+
+        .bottom-left-panel a:hover {
+            background-color: #34495e;
+            color: #3498db;
+            padding-left: 20px;
+        }
+
+        /* 3. Bottom-Right Panel (Main Content Stage) */
+        .bottom-right-panel {
+            background-color: #f8f9fa;
+            position: relative;
+        }
+
+        /* The Frame that catches target="content-frame" link clicks */
+        .content-display-window {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+
+    </style>
 </head>
 <body>
     <h1>Welcome to the Admin Display Panel</h1>
