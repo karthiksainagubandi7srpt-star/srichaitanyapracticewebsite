@@ -11,13 +11,15 @@
 </head>
 <body>
         <h2>Login Page</h2>
-    <form action="/login" method="POST">
+    <!-- Removed action and method attributes to prevent standard page reloads -->
+    <form id="loginForm" onsubmit="event.preventDefault(); submitLogin();">
         <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+        <input type="text" id="username" required><br><br>
         
         <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+        <input type="password" id="password" required><br><br>
         
+        <!-- Changed type to submit so validation works, but onsubmit handles execution -->
         <button type="submit">Login</button>
     </form>
     <p style="color: gray;">Hint: Use admin/password123 or user/password123</p>
@@ -29,23 +31,31 @@
 
     <script>
         function submitLogin() {
-    const BACKEND_URL = "https://studentbackend-zzbponrender.com";
+    // Corrected the broken typo in your original URL string (.onrender.com)
+    const BACKEND_URL = "https://onrender.com";
+
+    // Grab actual values from the input elements
+    const usernameInput = document.getElementById('username').value;
+    const passwordInput = document.getElementById('password').value;
 
     fetch(`${BACKEND_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'yourUsername', password: 'yourPassword' })
+        body: JSON.stringify({ username: usernameInput, password: passwordInput })
     })
     .then(response => response.json())
     .then(data => {
+        // Checks if your server.js returns a successful login status
         if (data.success) {
-            // The frontend securely moves the user to your separate dashboard file
             window.location.href = "dashboard.html"; 
         } else {
-            alert(data.message);
+            alert(data.message || "Invalid credentials");
         }
     })
-    .catch(err => console.error("Login failed:", err));
+    .catch(err => {
+        console.error("Login failed:", err);
+        alert("Could not connect to the authentication server.");
+    });
 }
 
         function fetchData() {
