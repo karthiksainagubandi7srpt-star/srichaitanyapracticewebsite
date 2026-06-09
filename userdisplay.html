@@ -7,11 +7,20 @@
 </head>
 <body>
     <h1>Welcome to the User Display Panel</h1>
-    <p>This is your standard user profile dashboard view.</p>
+    <p>Hello, <span id="profileName">User</span>! Welcome back to your client profile hub.</p>
     <button onclick="logout()">Log Out</button>
 
     <script>
+        // Security gate check to verify credentials exist in localStorage
+        const username = localStorage.getItem('username');
+        if (!username) {
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById('profileName').textContent = username;
+        }
+
         function logout() {
+            localStorage.clear();
             window.location.href = 'index.html';
         }
     </script>
