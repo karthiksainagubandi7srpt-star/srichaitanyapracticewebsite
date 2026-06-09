@@ -435,7 +435,8 @@
 <p id="message" class="custom-message"></p></b>
 
 <script>
-       const response = await fetch(`${RENDER_URL}/api/view-users`);
+     const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
+      
 
 document.getElementById('userForm').addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevent page reload
@@ -454,7 +455,7 @@ document.getElementById('userForm').addEventListener('submit', async (e) => {
 
     try {
         // Send complete data payload to your Node.js backend
-        const response = await fetch('http://localhost:3000/add-user', {
+        const response = await fetch('${RENDER_URL}/api/add-user', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json'
