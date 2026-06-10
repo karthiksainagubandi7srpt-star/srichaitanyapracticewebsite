@@ -14,7 +14,7 @@
     
     <!-- Step 1: Find the User -->
     <div id="searchSection">
-        <label for="searchId">Enter User ID to Edit:</label>
+        <label for="searchId">Enter Student ID to enter marks:</label>
         <input type="number" id="searchId" required>
         <button id="fetchBtn">Load Student details</button>
     </div>
@@ -56,13 +56,13 @@
                 const user = await response.json();
                 
                 // Populate the hidden form with database data
-                document.getElementById('userId').value = user.first_table_id;
-                document.getElementById('studentName').value = user.first_table_name;
-                document.getElementById('marks').value = user.studentmarks;
+                document.getElementById('userId').value = user.id;
+                document.getElementById('studentName').value = user.username;
+                document.getElementById('marks').value = user.marks;
                 
                 // Show form, clear error messages
                 document.getElementById('editForm').style.display = 'block';
-                msg.innerText = `Loaded profile for ID: ${user.first_table_id}`;
+                msg.innerText = `Loaded profile for ID: ${user.id}`;
             } catch (error) {
                 msg.innerText = error.message;
                 document.getElementById('editForm').style.display = 'none';
