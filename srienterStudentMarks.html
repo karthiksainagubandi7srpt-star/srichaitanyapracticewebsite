@@ -38,7 +38,7 @@
     <p id="message" style="font-weight: bold;"></p>
 
     <script>
-        const API_URL = 'http://localhost:3000/marks';
+        const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
 
         // 1. Fetch user data by ID
         document.getElementById('fetchBtn').addEventListener('click', async () => {
@@ -47,8 +47,8 @@
             if (!id) return msg.innerText = "Please enter an ID.";
 
             try {
-                const response = await fetch(`${API_URL}/${id}`);
-                
+                 const response = await fetch(`${RENDER_URL}/api/fetch-student`);
+                                
                 if (!response.ok) {
                     throw new Error('User not found.');
                 }
