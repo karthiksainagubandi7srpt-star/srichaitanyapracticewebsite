@@ -79,29 +79,31 @@
         });
 
         // 2. Submit the updated data
-        document.getElementById('editForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+document.getElementById('editForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            const id = document.getElementById('userId').value;
-            const username = document.getElementById('studentName').value;
-            const marks = document.getElementById('marks').value; 
-            const msg = document.getElementById('message');
+    const id = document.getElementById('userId').value;
+    const username = document.getElementById('studentName').value;
+    const marks = document.getElementById('marks').value; 
+    const msg = document.getElementById('message');
 
-            try {
-                const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(marks) 
-                });
+    try {
+        const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            // FIXED: Sent as a structured key-value JSON object with explicit number type casting
+            body: JSON.stringify({ marks: Number(marks) }) 
+        });
 
-                const result = await response.json();
-                msg.style.color = response.ok ? "green" : "red";
-                msg.innerText = result.message;
-            } catch (error) {
-                msg.style.color = "red";
-                msg.innerText = 'Failed to update record.';
-            }
-        }); // FIXED: Added the missing closing block symbols here
+        const result = await response.json();
+        msg.style.color = response.ok ? "green" : "red";
+        msg.innerText = result.message;
+    } catch (error) {
+        msg.style.color = "red";
+        msg.innerText = 'Failed to update record.';
+    }
+});
+
     </script>
 </body>
 </html>
