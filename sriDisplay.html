@@ -14,7 +14,7 @@
 </head>
 <body>
     <h2>Registered Users List</h2>
-    <button id="loadUsers">Refresh List</button>
+    <button id="loadUsers" onclick="">Refresh List</button>
 
     <table>
         <thead>
@@ -36,42 +36,51 @@
     </table>
 
     <script>
-        async function fetchUsers() {
-            const tableBody = document.getElementById('userTableBody');
-            tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+            const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
 
-            try {
-                // Fetch data from the Node.js backend server
-                const response = await fetch('http://localhost:3000/users');
-                const users = await response.json();
+    async function fetchTableData() {
+        const tableBody = document.getElementById('databaseTableBody');
+        const statusText = document.getElementById('statusText');
+        
+        try {
+            const response = await fetch(`${RENDER_URL}/api/view-users`);
+            const data = await response.json();
 
-                tableBody.innerHTML = ''; // Clear loading message
-
-                // Loop through the data and create table rows
-                users.forEach(user => {
-                    const row = `<tr>
-                        <td>${user.id}</td>
+           
+                // Render out database table loops
+                data.users.forEach(user => {
+                    const row = document.createElement('tr');
+                    
+                    
+                    
+                    row.innerHTML = `
+                        <td><strong>#${user.id}</strong></td>
                         <td>${user.username}</td>
-                        <td>${user.email}</td>
-                        <td>${user.age}</td>
+                        <td>${user.ID}</td>
+                        <td>${user.Email}</td>
+                        <td>${user.Age}</td>
                         <td>${user.gender}</td>
                         <td>${user.contactNo}</td>
                         <td>${user.score10th}</td>
                         <td>${user.board}</td>
                         <td>${user.address}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
+            
+                                           `;
+                    tableBody.appendChild(row);
                 });
-            } catch (error) {
-                tableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
+            } else {
+                statusText.style.color = 'red';
+                statusText.textContent = 'Server response error: ' + data.message;
             }
+        } catch (error) {
+            console.error('Fetch execution error:', error);
+            statusText.style.color = 'red';
+            statusText.textContent = 'Network communication failure connecting to Render.';
         }
+    }
 
-        // Load data immediately on page load
-        window.addEventListener('DOMContentLoaded', fetchUsers);
-        
-        // Reload data when clicking the refresh button
-        document.getElementById('loadUsers').addEventListener('click', fetchUsers);
+    // Initialize auto-fetch processing as soon as page component frames assemble
+    window.onload = fetchTableData;
     </script>
 </body>
 </html>
