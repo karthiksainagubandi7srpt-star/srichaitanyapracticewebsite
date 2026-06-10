@@ -47,7 +47,7 @@
             if (!id) return msg.innerText = "Please enter an ID.";
 
             try {
-                 const response = await fetch(`${RENDER_URL}/api/fetch-student`);
+                 const response = await fetch(`${RENDER_URL}/api/fetch-student/${id}`);
                                 
                 if (!response.ok) {
                     throw new Error('User not found.');
