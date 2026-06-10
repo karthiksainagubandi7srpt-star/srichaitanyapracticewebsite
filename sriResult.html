@@ -23,10 +23,10 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Rank</th>
+                <th>RANK</th>
                 <th>Username</th>
                 <th>Marks</th>
+                <th>ID</th>
             </tr>
         </thead>
         <!-- Standardised the body ID to match the JavaScript selector -->
@@ -62,9 +62,9 @@
                     // Aligned data keys with table header columns (Removed duplicate user.ID and user.Email)
                    row.innerHTML = `
                    <td>${user.calculated_rank || ''}</td>
-                   <td>${user.id || ''}</td>
                    <td>${user.username || ''}</td>
                    <td>${user.marks || ''}</td>
+                   <td>${user.id || ''}</td>
                     `;
 
                     tableBody.appendChild(row);
