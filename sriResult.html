@@ -61,10 +61,10 @@
                     
                     // Aligned data keys with table header columns (Removed duplicate user.ID and user.Email)
                    row.innerHTML = `
-                     <td><strong>#${user.id}</strong></td>
-                    <td>${user.rank || ''}</td>
-                    <td>${user.username || ''}</td>
-                    <td>${user.marks || ''}</td>
+                   <td><strong>Rank #${user.calculated_rank}</strong></td>
+                   <td>${user.id || ''}</td>
+                   <td>${user.username || ''}</td>
+                   <td>${user.marks || ''}</td>
                     `;
 
                     tableBody.appendChild(row);
