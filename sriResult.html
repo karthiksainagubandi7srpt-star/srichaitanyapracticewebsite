@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <title>View MySQL Users</title>
     <style>
-        table { width: 50%; border-collapse: collapse; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
-        body {
-              background-color: lightblue;
-              }
+        body { background-color: aqua; font-family: Arial, sans-serif; padding: 20px; }
+        #statusText { font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <h2>Students Rank List</h2>
-    <button id="loadsecond_table">Refresh List</button>
+
+    <h2>Registered Users List</h2>
+    <!-- Linked the Refresh button to trigger the fetch function -->
+    <button id="loadUsers" onclick="fetchTableData()">Refresh List</button>
+    
+    <!-- Added a missing status text element to display server messages -->
+    <div id="statusText"></div>
 
     <table>
         <thead>
@@ -25,44 +29,59 @@
                 <th>ID</th>
             </tr>
         </thead>
+        <!-- Standardised the body ID to match the JavaScript selector -->
         <tbody id="userTableBody">
             <!-- Data will be loaded here dynamically -->
         </tbody>
     </table>
 
     <script>
-        async function fetchsecond_table() {
-            const tableBody = document.getElementById('userTableBody');
-            tableBody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+    const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
 
-            try {
-                // Fetch data from the Node.js backend server
-                const response = await fetch('http://localhost:3000/marks');
-                const users = await response.json();
+    async function fetchTableData() {
+        // Corrected IDs to match the HTML elements
+        const tableBody = document.getElementById('userTableBody');
+        const statusText = document.getElementById('statusText');
+        
+        // Clear previous data and status messages before fetching new data
+        tableBody.innerHTML = '';
+        statusText.textContent = 'Loading users...';
+        statusText.style.color = 'black';
+                
+        try {
+            const response = await fetch(`${RENDER_URL}/api/view-users`);
+            const data = await response.json();
+            
+            // Fixed syntax error: 'if (response.ok)' was completely missing
+            if (response.ok && data.users) {
+                statusText.textContent = ''; // Clear loading text
+                
+                data.users.forEach(user => {
+                    const row = document.createElement('tr');
+                    
+                    // Aligned data keys with table header columns (Removed duplicate user.ID and user.Email)
+                   row.innerHTML = `
+                     <td><strong>#${user.id}</strong></td>
+                    <td>${user.rank || ''}</td>
+                    <td>${user.username || ''}</td>
+                    <td>${user.marks || ''}</td>
+                    `;
 
-                tableBody.innerHTML = ''; // Clear loading message
-
-                // Loop through the data and create table rows
-                users.forEach(user => {
-                    const row = `<tr>
-                        <td>${user.calculated_rank}</td>
-                        <td>${user.first_table_name}</td>
-                        
-                        <td>${user.studentmarks}</td>
-                        <td>${user.first_table_id}</td>
-                    </tr>`;
-                    tableBody.innerHTML += row;
+                    tableBody.appendChild(row);
                 });
-            } catch (error) {
-                tableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
+            } else {
+                statusText.style.color = 'red';
+                statusText.textContent = 'Server response error: ' + (data.message || 'Unknown error');
             }
+        } catch (error) {
+            console.error('Fetch execution error:', error);
+            statusText.style.color = 'red';
+            statusText.textContent = 'Network communication failure connecting to Render.';
         }
+    }
 
-        // Load data immediately on page load
-        window.addEventListener('DOMContentLoaded', fetchsecond_table);
-
-        // Reload data when clicking the refresh button
-        document.getElementById('loadsecond_table').addEventListener('click', fetchsecond_table);
+    // Auto-fetch data on initial page load
+    window.onload = fetchTableData;
     </script>
 </body>
 </html>
