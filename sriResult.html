@@ -49,7 +49,7 @@
         statusText.style.color = 'black';
                 
         try {
-            const response = await fetch(`${RENDER_URL}/api/view-users`);
+            const response = await fetch(`${RENDER_URL}/api/view-marks`);
             const data = await response.json();
             
             // Fixed syntax error: 'if (response.ok)' was completely missing
