@@ -91,7 +91,7 @@
                 const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ marks }) 
+                    body: JSON.stringify(marks) 
                 });
 
                 const result = await response.json();
