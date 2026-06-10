@@ -65,7 +65,9 @@
                     // Show form, clear error messages
                     document.getElementById('editForm').style.display = 'block';
                     msg.style.color = "green";
-                    msg.innerText = `Loaded profile for ID: ${student.id}`;
+                    // Checks lowercase 'id' first, then falls back to uppercase 'ID'
+                  msg.innerText = `Loaded profile for ID: ${student.id || student.ID || id}`;
+
                 } else {
                     throw new Error(data.message || 'Failed to parse student data.');
                 }
