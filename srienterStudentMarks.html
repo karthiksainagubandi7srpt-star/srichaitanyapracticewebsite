@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>Enter Student Marks</title>
     <style>
-    body   {
-                background-color: aqua;
-               }
+        body { background-color: aqua; font-family: Arial, sans-serif; padding: 20px; }
+        #message { font-weight: bold; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -25,17 +24,17 @@
     <form id="editForm" style="display: none;">
         <input type="hidden" id="userId">
 
-        <label>first_table_name</label>
-        <input type="text" id="studentName" required><br><br>
+        <label>Student Name:</label><br>
+        <!-- Readonly added so users don't accidentally try to rename the student here -->
+        <input type="text" id="studentName" readonly><br><br>
             
         <label>Marks:</label><br>
         <input type="number" id="marks" required><br><br>
         
-        
         <button type="submit">Save Changes</button>
     </form>
 
-    <p id="message" style="font-weight: bold;"></p>
+    <p id="message"></p>
 
     <script>
         const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
@@ -47,49 +46,59 @@
             if (!id) return msg.innerText = "Please enter an ID.";
 
             try {
+                // Pointing directly to the detailed student fetch route
                 const response = await fetch(`${RENDER_URL}/api/fetch-student/${id}`);
                                 
                 if (!response.ok) {
-                    throw new Error('User not found.');
+                    throw new Error('Student record not found.');
                 }
 
-                const user = await response.json();
+                const data = await response.json();
                 
-                // Populate the hidden form with database data
-                document.getElementById('userId').value = user.id;
-                document.getElementById('studentName').value = user.username;
-                document.getElementById('marks').value = user.marks;
-                
-                // Show form, clear error messages
-                document.getElementById('editForm').style.display = 'block';
-                msg.innerText = `Loaded profile for ID: ${user.id}`;
+                if (data.success && data.student) {
+                    const student = data.student;
+                    // Populate the hidden form fields safely
+                    document.getElementById('userId').value = student.id;
+                    document.getElementById('studentName').value = student.username || '';
+                    document.getElementById('marks').value = student.marks !== undefined ? student.marks : '';
+                    
+                    // Show form, clear error messages
+                    document.getElementById('editForm').style.display = 'block';
+                    msg.style.color = "green";
+                    msg.innerText = `Loaded profile for ID: ${student.id}`;
+                } else {
+                    throw new Error(data.message || 'Failed to parse student data.');
+                }
             } catch (error) {
+                msg.style.color = "red";
                 msg.innerText = error.message;
                 document.getElementById('editForm').style.display = 'none';
             }
         });
 
-// 2. Submit the updated data
-document.getElementById('editForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+        // 2. Submit the updated data
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-  // 1. Get the ID and the marks value from your form inputs
-const id = document.getElementById('userId').value;
-const marks = document.getElementById('marks').value; 
+            const id = document.getElementById('userId').value;
+            const marks = document.getElementById('marks').value; 
+            const msg = document.getElementById('message');
 
-try {
-    // FIXED: Changed endpoint URL from 'insert-marks' to 'update-marks' to match backend
-    const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ marks: Number(marks) }) // Force number conversion
-    });
+            try {
+                const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ marks: Number(marks) }) 
+                });
 
-    const result = await response.json();
-    document.getElementById('message').innerText = result.message;
-} catch (error) {
-    document.getElementById('message').innerText = 'Failed to update record.';
-}
+                const result = await response.json();
+                msg.style.color = response.ok ? "green" : "red";
+                msg.innerText = result.message;
+            } catch (error) {
+                msg.style.color = "red";
+                msg.innerText = 'Failed to update record.';
+            }
+        }); // FIXED: Added the missing closing block symbols here
     </script>
 </body>
 </html>
