@@ -78,7 +78,7 @@ document.getElementById('editForm').addEventListener('submit', async (e) => {
     const marks = document.getElementById('marks').value; 
     try {
         
-        const response = await fetch(`${API_URL}/${id}`, {
+        const response = await fetch(`${RENDER_URL}/api/insert-marks/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ marks }) 
