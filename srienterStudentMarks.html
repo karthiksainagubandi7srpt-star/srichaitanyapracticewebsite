@@ -47,7 +47,7 @@
             if (!id) return msg.innerText = "Please enter an ID.";
 
             try {
-                 const response = await fetch(`${RENDER_URL}/api/fetch-student/${id}`);
+                const response = await fetch(`${RENDER_URL}/api/fetch-student/${id}`);
                                 
                 if (!response.ok) {
                     throw new Error('User not found.');
@@ -76,7 +76,6 @@ document.getElementById('editForm').addEventListener('submit', async (e) => {
     // 1. Get the ID and the marks value from your form inputs
     const id = document.getElementById('userId').value;
     const marks = document.getElementById('marks').value; 
-
     try {
         
         const response = await fetch(`${API_URL}/${id}`, {
