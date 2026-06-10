@@ -78,21 +78,31 @@
             }
         });
 
-        // 2. Submit the updated data
+       // 2. Submit the updated data
 document.getElementById('editForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // FIXED: Safely grab the fixed ID from 'userId' instead of the volatile 'searchId' field
     const id = document.getElementById('userId').value;
     const username = document.getElementById('studentName').value;
     const marks = document.getElementById('marks').value; 
     const msg = document.getElementById('message');
 
+    // Quick frontend check before sending to Render
+    if (!id || !marks) {
+        msg.style.color = "red";
+        return msg.innerText = "Error: ID or Marks field is empty.";
+    }
+
     try {
-        const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
+        const response = await fetch(`${RENDER_URL}/api/update-marks/${id.trim()}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            // FIXED: Sent as a structured key-value JSON object with explicit number type casting
-            body: JSON.stringify({ marks: Number(marks) }) 
+            // Explicitly force clean types in the payload body
+            body: JSON.stringify({ 
+                username: username.trim(), 
+                marks: Number(marks) 
+            }) 
         });
 
         const result = await response.json();
@@ -100,7 +110,7 @@ document.getElementById('editForm').addEventListener('submit', async (e) => {
         msg.innerText = result.message;
     } catch (error) {
         msg.style.color = "red";
-        msg.innerText = 'Failed to update record.';
+        msg.innerText = 'Failed to communicate with update service.';
     }
 });
 
