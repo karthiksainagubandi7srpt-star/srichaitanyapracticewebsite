@@ -65,17 +65,18 @@
                     const row = document.createElement('tr');
                     
                     // Aligned data keys with table header columns (Removed duplicate user.ID and user.Email)
-                    row.innerHTML = `
-                        <td><strong>#${user.id || user.ID || ''}</strong></td>
-                        <td>${user.username || ''}</td>
-                        <td>${user.Email || user.email || ''}</td>
-                        <td>${user.Age || user.age || ''}</td>
-                        <td>${user.gender || ''}</td>
-                        <td>${user.contactNo || ''}</td>
-                        <td>${user.score10th || ''}</td>
-                        <td>${user.board || ''}</td>
-                        <td>${user.address || ''}</td>
-                    `;
+                   row.innerHTML = `
+                     <td><strong>#${user.id}</strong></td>
+                    <td>${user.username || ''}</td>
+                    <td>${user.email || ''}</td>
+                    <td>${user.age || ''}</td>
+                    <td>${user.gender || ''}</td>
+                    <td>${user.contactno || user.contactNo || ''}</td>
+                    <td>${user.score10th || ''}</td>
+                    <td>${user.board || ''}</td>
+                    <td>${user.address || ''}</td>
+                        `;
+
                     tableBody.appendChild(row);
                 });
             } else {
