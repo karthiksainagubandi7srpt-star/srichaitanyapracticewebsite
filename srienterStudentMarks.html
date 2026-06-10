@@ -73,23 +73,23 @@
 document.getElementById('editForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // 1. Get the ID and the marks value from your form inputs
-    const id = document.getElementById('userId').value;
-    const marks = document.getElementById('marks').value; 
-    try {
-        
-        const response = await fetch(`${RENDER_URL}/api/insert-marks/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ marks }) 
-        });
+  // 1. Get the ID and the marks value from your form inputs
+const id = document.getElementById('userId').value;
+const marks = document.getElementById('marks').value; 
 
-        const result = await response.json();
-        document.getElementById('message').innerText = result.message;
-    } catch (error) {
-        document.getElementById('message').innerText = 'Failed to update record.';
-    }
-});
+try {
+    // FIXED: Changed endpoint URL from 'insert-marks' to 'update-marks' to match backend
+    const response = await fetch(`${RENDER_URL}/api/update-marks/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ marks: Number(marks) }) // Force number conversion
+    });
+
+    const result = await response.json();
+    document.getElementById('message').innerText = result.message;
+} catch (error) {
+    document.getElementById('message').innerText = 'Failed to update record.';
+}
     </script>
 </body>
 </html>
