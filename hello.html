@@ -1,44 +1,51 @@
+<!DOCTYPE html>
 <html>
 <head>
   <style>
-  body{
-       background-color:aqua;
-       }
-    </style>
+    body {
+      background-color: aqua;
+    }
+  </style>
 </head>
-  <body>
-<label for="content">Enter Content</label>
-<input type="text" id="content" placeholder= "ENTER DATA" required></input><br>
-<button id="fetchBtn">SUBMIT</button>
-    <script>
- 
-    <p id="message"></p>
+<body>
 
-    <script>
-        const RENDER_URL = 'https://testingserver-ush2.onrender.com';
+  <label for="content">Enter Content</label>
+  <input type="text" id="content" placeholder="ENTER DATA" required>
+  <br>
+  <button id="fetchBtn">SUBMIT</button>
 
-        document.getElementById('addBtn').addEventListener('click', async () => {
-            const hi = document.getElementById('content').value;
-            const msg = document.getElementById('message');
+  <p id="message"></p>
+
+  <script>
+    const RENDER_URL = 'https://testingserver-ush2.onrender.com';
+
+    document.getElementById('fetchBtn').addEventListener('click', async () => {
+        const hi = document.getElementById('content').value;
+        const msg = document.getElementById('message');
+        
+        // Clear previous messages
+        msg.innerText = '';
+
+        if (!hi) {
+            return msg.innerText = `Please enter content.`;
+        }
+
+        try {
+            const response = await fetch(`${RENDER_URL}/api/fetch-message`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ hi })
+            });
             
-            // Clear previous messages and results
-            msg.innerText = '';
-            resultInput.value = '';
-
-            if (!hi) {
-                return msg.innerText = `Please enter content.`;
-            }
-
-            try {
-                // Fixed: Corrected fetch syntax by wrapping options inside fetch arguments
-                const response = await fetch(`${RENDER_URL}/api/fetch-message`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ hi  })
-                });
-                   const data=await response.json();
-              return msg.innertext=data.note;
-                        
-    </script>
-  </body>
+            const data = await response.json();
+            
+            // Fixed typo: innertext changed to innerText
+            return msg.innerText = data.note;
+        } catch (error) {
+            console.error('Fetch error:', error);
+            msg.innerText = 'Failed to connect to the server.';
+        }
+    });
+  </script>
+</body>
 </html>
