@@ -146,7 +146,6 @@
             </div>
         </div>
 
-        <!-- Links are now 100% dynamically injected below via JavaScript -->
         <div class="bottom-left-panel" id="sidebarMenu"></div>
 
         <div class="bottom-right-panel">
@@ -164,11 +163,15 @@
             localStorage.clear();
             window.location.href = 'index.html';
         } else {
-            document.getElementById('adminName').textContent = `${username} (${role.toUpperCase()})`;
-            const sidebar = document.getElementById('sidebarMenu');
-            
-            if (role === 'admin') {
-                // 1. ADMIN MENU LAYOUT (Sees rank list AND management tools)
+            // Check authorization levels immediately
+            if (role !== 'admin') {
+                // 🚀 DIRECT BYPASS ROUTINE: Forward non-admin top window right to user layout file
+                window.location.replace('normalUserDisplay.html');
+            } else {
+                // Generate Admin UI Panel Structures safely
+                document.getElementById('adminName').textContent = `${username} (ADMIN)`;
+                const sidebar = document.getElementById('sidebarMenu');
+                
                 sidebar.innerHTML = `
                     <h3>System Controls</h3>
                     <a href="create-user.html" target="content-frame">👤 Create New Portal User</a>
@@ -184,15 +187,6 @@
                     <h3>System Restrictions</h3>
                     <a href="/admin-secret-page" target="content-frame">🔒 Secure Admin Settings</a>
                 `;
-            } else {
-                // 2. NORMAL USER MENU LAYOUT (Only sees their student profile link)
-                sidebar.innerHTML = `
-                    <h3>Student Center</h3>
-                    <a href="normalUserDisplay.html" target="content-frame">👤 My Student Profile</a>
-                `;
-                
-                // Instantly update the center iframe view to display their landing screen
-                document.getElementById('contentFrame').src = 'normalUserDisplay.html';
             }
         }
 
