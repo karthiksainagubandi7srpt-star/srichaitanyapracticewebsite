@@ -153,6 +153,7 @@
         </div>
 
         <div class="bottom-right-panel">
+            <!-- Default iframe display stage -->
             <iframe src="right.html" name="content-frame" id="contentFrame" class="content-display-window"></iframe>
         </div>
     </div>
@@ -187,8 +188,8 @@
                     <a href="/admin-secret-page" target="content-frame">🔒 Secure Admin Settings</a>
                 `);
             } else {
-                // Instantly force users away from admin default layout view
-                document.getElementById('contentFrame').src = 'sriResult.html';
+                // Instantly force normal users to view their unique student center panel layout
+                document.getElementById('contentFrame').src = 'normalUserDisplay.html';
             }
         }
 
