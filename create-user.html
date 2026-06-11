@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create System User | SRI CHAITANYA COLLEGES</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .action-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            color: #0d47a1; /* Sri Chaitanya Blue */
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #334155;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #0d47a1;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #0a3981;
+        }
+
+        #statusMessage {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="action-card">
+        <h2>👤 Create Portal Account</h2>
+        
+        <form id="createUserForm">
+            <div class="form-group">
+                <label for="newUsername">Username / User ID</label>
+                <input type="text" id="newUsername" placeholder="Assign account login ID" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="newPassword">Password</label>
+                <input type="password" id="newPassword" placeholder="Assign system password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="newRole">System Account Level</label>
+                <select id="newRole">
+                    <option value="user">Normal User / Student</option>
+                    <option value="admin">Administrator (Full Access)</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="submit-btn">Provision Account</button>
+        </form>
+        
+        <p id="statusMessage"></p>
+    </div>
+
+    <script>
+        const RENDER_URL = 'https://onrender.com';
+        
+        // Inherit authorization keys securely from parent dashboard layout context
+        const token = localStorage.getItem('authToken');
+        const role = localStorage.getItem('role');
+
+        // Security Gate check
+        if (!token || role !== 'admin') {
+            document.body.innerHTML = '<h3 style="color:red; text-align:center; margin-top:50px;">403 Forbidden: Administrative security clearance required.</h3>';
+        }
+
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const newRole = document.getElementById('newRole').value;
+            const statusMsg = document.getElementById('statusMessage');
+
+            statusMsg.style.color = '#0d47a1';
+            statusMsg.textContent = 'Transmitting creation request...';
+
+            try {
+                const response = await fetch(`${RENDER_URL}/api/create-user`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ newUsername, newPassword, newRole })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    statusMsg.style.color = 'green';
+                    statusMsg.textContent = data.message || 'Account successfully written to database!';
+                    document.getElementById('createUserForm').reset();
+                } else {
+                    statusMsg.style.color = 'red';
+                    statusMsg.textContent = data.message || 'Action rejected by server rules.';
+                }
+            } catch (error) {
+                statusMsg.style.color = 'red';
+                statusMsg.textContent = 'Server communications infrastructure failure.';
+            }
+        });
+    </script>
+</body>
+</html>
