@@ -31,7 +31,7 @@
 
             try {
                 // Fixed: Corrected fetch syntax by wrapping options inside fetch arguments
-                const response = await fetch(`${RENDER_URL}/api/fetch`, {
+                const response = await fetch(`${RENDER_URL}/api/fetch-message`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ hi  })
