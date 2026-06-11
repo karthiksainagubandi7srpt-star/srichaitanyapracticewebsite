@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SRI CHAITANYA COLLEGES</title>
+    <style>
+        /* Modern Reset and Grid Architecture Setup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f4f6f9;
+        }
+
+        /* 3-Panel Layout Container Core Structure */
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: 70px 1fr; /* Top bar fixed height, remaining space for bottom layout */
+            grid-template-columns: 280px 1fr; /* Sidebar width, main content fills rest */
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* 1. TOP BAR PANEL */
+        .top-panel {
+            grid-column: span 2;
+            background-color: #0d47a1; /* Matched Sri Chaitanya Blue */
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        .top-panel h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .admin-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-meta span {
+            font-size: 0.95rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .logout-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 2. BOTTOM-LEFT PANEL (Sidebar Navigation) */
+        .bottom-left-panel {
+            background-color: #1e293b; /* Premium dark slate sidebar */
+            color: #f8fafc;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.05);
+            overflow-y: auto;
+        }
+
+        .bottom-left-panel h3 {
+            margin-top: 15px;
+            color: #38bdf8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+            padding-left: 10px;
+        }
+        
+        .bottom-left-panel h3:first-child {
+            margin-top: 0;
+        }
+
+        /* Styling for navigation menu items */
+        .bottom-left-panel a {
+            text-decoration: none;
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            padding: 12px 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: block;
+            font-weight: 500;
+        }
+
+        .bottom-left-panel a:hover {
+            background-color: #334155;
+            color: #38bdf8;
+            padding-left: 20px;
+        }
+
+        /* 3. BOTTOM-RIGHT PANEL (Main Content Stage) */
+        .bottom-right-panel {
+            background-color: #ffffff;
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* The Frame that catches target="content-frame" link clicks */
+        .content-display-window {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #ffffff;
+        }
+
+        /* User Account Creation Modal / Drawer Container hidden or placed natively */
+        .admin-action-box {
+            display: none; /* Keeps background logic functional while UI runs cleanly inside main content frames */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- 1. TOP BAR PANEL -->
+        <div class="top-panel">
+            <h2>SRI CHAITANYA COLLEGES</h2>
+            <div class="admin-meta">
+                <span>User: <strong id="adminName">Loading...</strong></span>
+                <a href="index.html" class="logout-btn" onclick="logout()">Sign Out</a>
+            </div>
+        </div>
+
+        <!-- 2. BOTTOM-LEFT PANEL (Adaptive Role Navigation Links) -->
+        <div class="bottom-left-panel" id="sidebarMenu">
+            <!-- Normal User Section (Visible to both Roles) -->
+            <h3>Student Center</h3>
+            <a href="sriResult.html" target="content-frame">🏆 View Rank List</a>
+
+            <!-- Administrative Sections (Dynamically Injected via Script) -->
+        </div>
+
+        <!-- 3. BOTTOM-RIGHT PANEL (Target Window) -->
+        <div class="bottom-right-panel">
+            <!-- Default landing view frame layout mapping -->
+            <iframe src="right.html" name="content-frame" id="contentFrame" class="content-display-window"></iframe>
+        </div>
+    </div>
+
+    <!-- Background Logical Form Elements (Preserved for internal API registration handling) -->
+    <div class="admin-action-box">
+        <form id="createUserForm">
+            <input type="text" id="newUsername" required>
+            <input type="password" id="newPassword" required>
+            <select id="newRole"><option value="admin">admin</option></select>
+        </form>
+        <p id="statusMessage"></p>
+    </div>
+
+    <script>
+        const RENDER_URL = 'https://onrender.com';
+        
+        // Complete Security Session Extractor Hook
+        const token = localStorage.getItem('authToken');
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role');
+
+        // Security gate execution block
+        if (!token || !role) {
+            alert('Access denied. Authorization session missing.');
+            localStorage.clear();
+            window.location.href = 'index.html';
+        } else {
+            // Apply personalization values
+            document.getElementById('adminName').textContent = `${username} (${role.toUpperCase()})`;
+            
+            // UI Mutation Engine: Build dynamic menu options based securely on role
+            const sidebar = document.getElementById('sidebarMenu');
+            
+            if (role === 'admin') {
+                // Admin gets elevated management menus appended to their panel context
+                sidebar.insertAdjacentHTML('beforeend', `
+                    <h3>Student Management</h3>
+                    <a href="applicationform.html" target="content-frame">➕ Register New Student</a>
+                    <a href="sriDisplay.html" target="content-frame">📋 View All Registered Students</a>
+                    
+                    <h3>Performance & Marks</h3>
+                    <a href="srienterStudentMarks.html" target="content-frame">🏆 Enter Student Marks</a>
+                    
+                    <h3>System Restrictions</h3>
+                    <a href="/admin-secret-page" target="content-frame">🔒 Secure Admin Settings</a>
+                `);
+            } else {
+                // If a normal student logs in, redirect their fallback viewport pane immediately away from admin defaults
+                document.getElementById('contentFrame').src = 'sriResult.html';
+            }
+        }
+
+        // Keep core account creation event listeners active for background validation loops
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (role !== 'admin') {
+                alert('Operation forbidden.');
+                return;
+            }
+
+            const newUsername = document.getElementById('newUsername').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const newRole = document.getElementById('newRole').value;
+            const statusMsg = document.getElementById('statusMessage');
+
+            try {
+                const response = await fetch(`${RENDER_URL}/api/create-user`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ newUsername, newPassword, newRole })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    statusMsg.style.color = 'green';
+                    statusMsg.textContent = data.message;
+                    document.getElementById('createUserForm').reset();
+                } else {
+                    statusMsg.style.color = 'red';
+                    statusMsg.textContent = data.message || 'Operation failed.';
+                }
+            } catch (error) {
+                statusMsg.style.color = 'red';
+                statusMsg.textContent = 'Server processing network error.';
+            }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
