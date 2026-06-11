@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter Student Marks</title>
+    <style>
+        body { background-color: aqua; font-family: Arial, sans-serif; padding: 20px; }
+        #message { font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <h2>Enter Id</h2>
+    
+    <!-- Step 1: Find the User -->
+    <div id="addTwoNumbers">
+        <label for="firstno">Enter the FIRST NUMBER</label>
+        <input type="number" id="number1" place-holder="ENTER FIRST NUMBER" required><br>
+      <label for="secondno">Enter the SECOND NUMBER</label>
+       <input type="number" id="number2" place-holder="ENTER SECOND NUMBER" required><br>
+
+        <button id="addBtn">Add Numbers</button><br>
+      <label for="result">SUM OF NUMBERS</label>
+       <input type="number" id="result" required>
+    </div>
+
+    <br><hr><br>
+
+    
+    <p id="message"></p>
+
+    <script>
+        const RENDER_URL = 'https://studentbackend-zzbp.onrender.com';
+
+        // 1. Fetch user data by ID
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            const id = document.getElementById('searchId').value;
+            const msg = document.getElementById('message');
+            if (!id) return msg.innerText = "Please enter an ID.";
+
+            try {
+                // Pointing directly to the detailed student fetch route
+                const response = await fetch(`${RENDER_URL}/api/fetch-student/${id}`);
+                                
+                if (!response.ok) {
+                    throw new Error('Student record not found.');
+                }
+
+                const data = await response.json();
+                
+                if (data.success && data.student) {
+                    const student = data.student;
+                    // Populate the hidden form fields safely
+                    document.getElementById('userId').value = student.id;
+                    document.getElementById('studentName').value = student.username || '';
+                    document.getElementById('marks').value = student.marks !== undefined ? student.marks : '';
+                    
+                    // Show form, clear error messages
+                    document.getElementById('editForm').style.display = 'block';
+                    msg.style.color = "green";
+                    // Checks lowercase 'id' first, then falls back to uppercase 'ID'
+                  msg.innerText = `Loaded profile for ID: ${student.id || student.ID || id}`;
+
+                } else {
+                    throw new Error(data.message || 'Failed to parse student data.');
+                }
+            } catch (error) {
+                msg.style.color = "red";
+                msg.innerText = error.message;
+                document.getElementById('editForm').style.display = 'none';
+            }
+        });
+
+       // 2. Submit the updated data
+document.getElementById('editForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // FIXED: Safely grab the fixed ID from 'userId' instead of the volatile 'searchId' field
+    const id = document.getElementById('userId').value;
+    const username = document.getElementById('studentName').value;
+    const marks = document.getElementById('marks').value; 
+    const msg = document.getElementById('message');
+
+    // Quick frontend check before sending to Render
+    if (!id || !marks) {
+        msg.style.color = "red";
+        return msg.innerText = "Error: ID or Marks field is empty.";
+    }
+
+    try {
+        const response = await fetch(`${RENDER_URL}/api/update-marks/${id.trim()}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            // Explicitly force clean types in the payload body
+            body: JSON.stringify({ 
+                username: username.trim(), 
+                marks: Number(marks) 
+            }) 
+        });
+
+        const result = await response.json();
+        msg.style.color = response.ok ? "green" : "red";
+        msg.innerText = result.message;
+    } catch (error) {
+        msg.style.color = "red";
+        msg.innerText = 'Failed to communicate with update service.';
+    }
+});
+
+    </script>
+</body>
+</html>
