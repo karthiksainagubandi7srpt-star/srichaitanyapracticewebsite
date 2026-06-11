@@ -146,14 +146,10 @@
             </div>
         </div>
 
-        <div class="bottom-left-panel" id="sidebarMenu">
-            <!-- Normal User Center Links -->
-            <h3>Student Center</h3>
-            <a href="sriResult.html" target="content-frame">🏆 View Rank List</a>
-        </div>
+        <!-- Links are now 100% dynamically injected below via JavaScript -->
+        <div class="bottom-left-panel" id="sidebarMenu"></div>
 
         <div class="bottom-right-panel">
-            <!-- Default iframe display stage -->
             <iframe src="right.html" name="content-frame" id="contentFrame" class="content-display-window"></iframe>
         </div>
     </div>
@@ -172,8 +168,8 @@
             const sidebar = document.getElementById('sidebarMenu');
             
             if (role === 'admin') {
-                // Admin dynamic controls generation block
-                sidebar.insertAdjacentHTML('beforeend', `
+                // 1. ADMIN MENU LAYOUT (Sees rank list AND management tools)
+                sidebar.innerHTML = `
                     <h3>System Controls</h3>
                     <a href="create-user.html" target="content-frame">👤 Create New Portal User</a>
 
@@ -183,12 +179,19 @@
                     
                     <h3>Performance & Marks</h3>
                     <a href="srienterStudentMarks.html" target="content-frame">🏆 Enter Student Marks</a>
+                    <a href="sriResult.html" target="content-frame">🏆 View Student Rank List</a>
                     
                     <h3>System Restrictions</h3>
                     <a href="/admin-secret-page" target="content-frame">🔒 Secure Admin Settings</a>
-                `);
+                `;
             } else {
-                // Instantly force normal users to view their unique student center panel layout
+                // 2. NORMAL USER MENU LAYOUT (Only sees their student profile link)
+                sidebar.innerHTML = `
+                    <h3>Student Center</h3>
+                    <a href="normalUserDisplay.html" target="content-frame">👤 My Student Profile</a>
+                `;
+                
+                // Instantly update the center iframe view to display their landing screen
                 document.getElementById('contentFrame').src = 'normalUserDisplay.html';
             }
         }
