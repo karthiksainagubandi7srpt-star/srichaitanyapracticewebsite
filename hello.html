@@ -36,7 +36,8 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ hi  })
                 });
-                                   
+                   const data=await response.json();
+              return msg.innertext=data.note;
                         
     </script>
   </body>
