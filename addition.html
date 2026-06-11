@@ -56,7 +56,7 @@
                     throw new Error('No Response From testingServer.');
                 }  
                 const result = await response.json();
-                document.getElementId('result')=result;
+                document.getElementId('result')=result.sum;
     </script>
 </body>
 </html>
