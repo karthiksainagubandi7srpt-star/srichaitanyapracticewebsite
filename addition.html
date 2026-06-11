@@ -11,52 +11,66 @@
 <body>
     <h2>Enter Id</h2>
     
-    <!-- Step 1: Find the User -->
     <div id="addTwoNumbers">
-        <label for="firstno">Enter the FIRST NUMBER</label>
-        <input type="number" id="number1" place-holder="ENTER FIRST NUMBER" required><br>
-      <label for="secondno">Enter the SECOND NUMBER</label>
-       <input type="number" id="number2" place-holder="ENTER SECOND NUMBER" required><br>
+        <label for="number1">Enter the FIRST NUMBER</label>
+        <!-- Fixed typo: placeholder instead of place-holder -->
+        <input type="number" id="number1" placeholder="ENTER FIRST NUMBER" required><br>
+        <label for="number2">Enter the SECOND NUMBER</label>
+        <input type="number" id="number2" placeholder="ENTER SECOND NUMBER" required><br>
 
         <button id="addBtn">Add Numbers</button><br>
-      <label for="result">SUM OF NUMBERS</label>
-       <input type="number" id="result" required>
+        <label for="result">SUM OF NUMBERS</label>
+        <!-- Added disabled so the user cannot manually type over the API result -->
+        <input type="number" id="result" required disabled>
     </div>
 
     <br><hr><br>
-
     
     <p id="message"></p>
 
     <script>
         const RENDER_URL = 'https://testingserver-ush2.onrender.com';
 
-        // 1. Fetch user data by ID
         document.getElementById('addBtn').addEventListener('click', async () => {
             const num1 = document.getElementById('number1').value;
             const num2 = document.getElementById('number2').value;
-            const res = document.getElementById('result').value;
             const msg = document.getElementById('message');
+            const resultInput = document.getElementById('result');
             
-           if (!num1 || !num2) return msg.innerText = `Please enter ${!num1 ? 'num1' : 'num2'}.`;
+            // Clear previous messages and results
+            msg.innerText = '';
+            resultInput.value = '';
+
+            if (!num1 || !num2) {
+                return msg.innerText = `Please enter ${!num1 ? 'First Number' : 'Second Number'}.`;
+            }
 
             try {
-                // Pointing directly to the detailed student fetch route
-                const response = await fetch(`${RENDER_URL}/api/fetch-sum`) {
-                  method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            // Explicitly force clean types in the payload body
-            body: JSON.stringify({ 
-                firstnumber: Number(num1), 
-                secondnumber: Number(num2) 
-           })
-                };
+                // Fixed: Corrected fetch syntax by wrapping options inside fetch arguments
+                const response = await fetch(`${RENDER_URL}/api/fetch-sum`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        firstnumber: Number(num1), 
+                        secondnumber: Number(num2) 
+                    })
+                });
                                    
                 if (!response.ok) {
                     throw new Error('No Response From testingServer.');
                 }  
-                const result = await response.json();
-                document.getElementId('result')=result.sum;
+                
+                const data = await response.json();
+                
+                // Fixed: Changed getElementId to getElementById and assigned via .value
+                resultInput.value = data.sum;
+                msg.innerText = data.message || "Success!";
+                
+            } catch (err) {
+                console.error(err);
+                msg.innerText = "Error connecting to the server.";
+            }
+        }); // Fixed: Added missing closing brackets for the event listener
     </script>
 </body>
 </html>
