@@ -11,11 +11,53 @@
 <input type="text" placeholder= "ENTER DATA" id="hello" ></input><br>
 <button id="fetchBtn">SUBMIT</button>
     <script>
-    fetch (`${RENDER_URL}/api/fetch-hello`),{
-    method:'PUT',
-    headers:{'Content-Type':'applicaion/json'},
-    body:JSON.stringify({
-      
+ 
+    <p id="message"></p>
+
+    <script>
+        const RENDER_URL = 'https://testingserver-ush2.onrender.com';
+
+        document.getElementById('addBtn').addEventListener('click', async () => {
+            const  = document.getElementById('').value;
+            const num2 = document.getElementById('number2').value;
+            const msg = document.getElementById('message');
+            const resultInput = document.getElementById('result');
+            
+            // Clear previous messages and results
+            msg.innerText = '';
+            resultInput.value = '';
+
+            if (!num1 || !num2) {
+                return msg.innerText = `Please enter ${!num1 ? 'First Number' : 'Second Number'}.`;
+            }
+
+            try {
+                // Fixed: Corrected fetch syntax by wrapping options inside fetch arguments
+                const response = await fetch(`${RENDER_URL}/api/fetch-sum`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        firstnumber: Number(num1), 
+                        secondnumber: Number(num2) 
+                    })
+                });
+                                   
+                if (!response.ok) {
+                    throw new Error('No Response From testingServer.');
+                }  
+                
+                const data = await response.json();
+                
+                // Fixed: Changed getElementId to getElementById and assigned via .value
+                resultInput.value = data.sum;
+                msg.innerText = data.message || "Success!";
+                
+            } catch (err) {
+                console.error(err);
+                msg.innerText = "Error connecting to the server.";
+            }
+        }); // Fixed: Added missing closing brackets for the event listener
+         
     </script>
   </body>
 </html>
