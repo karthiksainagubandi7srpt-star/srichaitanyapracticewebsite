@@ -42,11 +42,21 @@
 
             try {
                 // Pointing directly to the detailed student fetch route
-                const response = await fetch(`${RENDER_URL}/api/fetch-sum`);
-                                
+                const response = await fetch(`${RENDER_URL}/api/fetch-sum`) {
+                  method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            // Explicitly force clean types in the payload body
+            body: JSON.stringify({ 
+                firstnumber: Number(num1), 
+                secondnumber: Number(num2) 
+           })
+                };
+                                   
                 if (!response.ok) {
                     throw new Error('No Response From testingServer.');
-                }
+                }  
+                const result = await response.json();
+                document.getElementId('result')=result;
     </script>
 </body>
 </html>
