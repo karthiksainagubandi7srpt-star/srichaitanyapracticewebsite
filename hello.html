@@ -8,9 +8,13 @@
 </head>
   <body>
 <label>Enter Data</label>
-<input type="text" placeholder= ENTERDATA ></input><br>
+<input type="text" placeholder= "ENTER DATA" id="hello" ></input><br>
 <button id="fetchBtn">SUBMIT</button>
     <script>
+    fetch (`${RENDER_URL}/api/fetch-hello`),{
+    method:'PUT',
+    headers:{'Content-Type':'applicaion/json'},
+    body:JSON.stringify({
       
     </script>
   </body>
