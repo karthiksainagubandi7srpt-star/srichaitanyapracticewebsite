@@ -78,6 +78,48 @@
         p {
             margin-bottom: 15px;
         }
+        .custom-button {
+    /* Layout & Spacing */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+    
+    /* Colors & Clean Edges */
+    background-color: #3b82f6; /* Modern blue */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px; /* Smooth rounded corners */
+    
+    /* Effects & Interaction */
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+    transition: all 0.2s ease-in-out; /* Smooth movement transition */
+}
+
+/* Hover State: When mouse moves over the button */
+.custom-button:hover {
+    background-color: #2563eb; /* Slightly darker blue */
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px); /* Lifts up slightly */
+}
+
+/* Active State: When the button is physically clicked down */
+.custom-button:active {
+    transform: translateY(0); /* Drops back down */
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+/* Focus State: Keeps it accessible for keyboard navigation */
+.custom-button:focus {
+    outline: 3px solid rgba(59, 130, 246, 0.4);
+    outline-offset: 2px;
+}
+
     </style>
 </head>
 <body>
@@ -91,10 +133,10 @@
 
     <!-- PART 2 -->
     <div class="part-2" id="scrollHeader">
-        <button id="button1" class="button">vegetables</button>
-        <button id="button2" class="button">friuts</button>
-        <button id="button3" class="button">groceries</button>
-        <button id="button4" class="button">furniture</button>
+        <button id="button1" class="custom-button">VEGETABLES</button>
+        <button id="button2" class="custom-button">FRUITS</button>
+        <button id="button3" class="custom-button">GROCERIES</button>
+        <button id="button4" class="custom-button">FURNITURE</button>
     </div>
 
     <!-- PART 3 -->
