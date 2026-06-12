@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three Part Scroll Layout</title>
+    <style>
+        /* Reset default browser margins */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        /* PART 1: Permanently locked at the very top */
+        .part-1 {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #1e293b;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100; /* Keeps it on top of everything else */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* PART 2: Disappears on scroll down, reappears on scroll up */
+        .part-2 {
+            position: sticky;
+            top: 60px; /* Aligns exactly beneath the 60px height of Part 1 */
+            width: 100%;
+            height: 80px;
+            background-color: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 90; /* Sits directly beneath Part 1 layer-wise */
+        }
+
+        /* PART 3: The main scrollable content area */
+        .part-3 {
+            margin-top: 60px; /* Prevents Part 1 from covering the top of this content */
+            padding: 40px 20px;
+            background-color: #ffffff;
+            min-height: 2000px; /* Artificial height to enable long scrolling */
+        }
+
+        .content-box {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PART 1 -->
+    <div class="part-1">
+        <h2>Part 1: Permanently Fixed Header</h2>
+    </div>
+
+    <!-- PART 2 -->
+    <div class="part-2">
+        <h3>Part 2: Hidden on Scroll Down / Visible on Scroll Up</h3>
+    </div>
+
+    <!-- PART 3 -->
+    <main class="part-3">
+        <div class="content-box">
+            <h1>Part 3: Scrollable Content Area</h1>
+            <p>Scroll down to watch Part 2 smoothly tuck away behind the main black top header.</p>
+            <p>Scroll back upward at any point, and Part 2 will instantly slide out and reveal itself again.</p>
+            <hr style="margin: 40px 0; border: 0; border-top: 1px dashed #ccc;">
+            
+            <!-- Dummy text blocks to force scrolling functionality -->
+            <p style="height: 400px; background: #f9f9f9; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
+                [Scroll Down Context Block A]
+            </p>
+            <p style="height: 400px; background: #eef2f3; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
+                [Scroll Down Context Block B]
+            </p>
+            <p style="height: 400px; background: #f9f9f9; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
+                [Scroll Down Context Block C]
+            </p>
+        </div>
+    </main>
+
+</body>
+</html>
