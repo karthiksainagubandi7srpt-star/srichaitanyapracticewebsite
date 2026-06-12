@@ -143,113 +143,158 @@
             margin-bottom: 10px;
             display: block;
         }
+        .inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: sans-serif;
+}
+
+.inventory-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 12px;
+    border-bottom: 2px solid #ddd;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.inventory-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    color: #555;
+    vertical-align: middle;
+}
+
+/* Zebra striping rows for clean readability */
+.inventory-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Row hover highlight effect */
+.inventory-table tr:hover {
+    background-color: #f1f1f1;
+}
+
     </style>
 </head>
 <body>
+<!-- PART 1 -->
+<div class="part-1">
+    <h1><span style="margin-right: 12px;">🛒</span>SUPER MARKET</h1>
+</div>
 
-    <!-- PART 1 -->
-    <div class="part-1">
-        <h1><span style="margin-right: 12px;">🛒</span>SUPER MARKET</h1>
+<!-- PART 2 -->
+<div class="part-2" id="scrollHeader">
+    <button id="button1" class="custom-button" onclick="displayCategory('VEGETABLES')">VEGETABLES</button>
+    <button id="button2" class="custom-button" onclick="displayCategory('FRUITS')">FRUITS</button>
+    <button id="button3" class="custom-button" onclick="displayCategory('GROCERIES')">GROCERIES</button>
+    <button id="button4" class="custom-button" onclick="displayCategory('FURNITURE')">FURNITURE</button>
+</div>
+
+<!-- PART 3 -->
+<main class="part-3">
+    <div class="content-box" id="displayTarget">
+        <h1 class="display-title">Welcome to the Supermarket</h1>
+        <p>Please select a department from the menu bar above to reveal available store inventories inside this layout zone.</p>
     </div>
+</main>
 
-    <!-- PART 2 -->
-    <div class="part-2" id="scrollHeader">
-        <!-- Added explicit JS function clicks passing down the text type selection -->
-        <button id="button1" class="custom-button" onclick="displayCategory('VEGETABLES')">VEGETABLES</button>
-        <button id="button2" class="custom-button" onclick="displayCategory('FRUITS')">FRUITS</button>
-        <button id="button3" class="custom-button" onclick="displayCategory('GROCERIES')">GROCERIES</button>
-        <button id="button4" class="custom-button" onclick="displayCategory('FURNITURE')">FURNITURE</button>
-    </div>
+<script>
+    // --- 1. HANDLE SHOW/HIDE LOGIC ON SCROLL ---
+    let lastScrollTop = 0;
+    const scrollHeader = document.getElementById('scrollHeader');
 
-    <!-- PART 3 -->
-    <main class="part-3">
-        <div class="content-box" id="displayTarget">
-            <!-- Default landing view text before any buttons get clicked -->
-            <h1 class="display-title">Welcome to the Supermarket</h1>
-            <p>Please select a department from the menu bar above to reveal available store inventories inside this layout zone.</p>
-        </div>
-    </main>
+    window.addEventListener('scroll', function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop) {
+            scrollHeader.classList.add('hidden');
+        } else {
+            scrollHeader.classList.remove('hidden');
+        }
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+    });
 
-    <script>
-        // --- 1. HANDLE SHOW/HIDE LOGIC ON SCROLL ---
-        let lastScrollTop = 0;
-        const scrollHeader = document.getElementById('scrollHeader');
+    // --- 2. UPDATED DATA MATRIX (Added 'available' count) ---
+    const storeInventory = {
+        VEGETABLES: [
+            { name: 'Fresh Tomato', icon: '🍅', available: 45 },
+            { name: 'Organic Carrot', icon: '🥕', available: 12 },
+            { name: 'Green Broccoli', icon: '🥦', available: 8 },
+            { name: 'Crisp Potato', icon: '🥔', available: 120 }
+        ],
+        FRUITS: [
+            { name: 'Sweet Apple', icon: '🍎', available: 60 },
+            { name: 'Ripe Banana', icon: '🍌', available: 15 },
+            { name: 'Juicy Orange', icon: '🍊', available: 34 },
+            { name: 'Fresh Grapes', icon: '🍇', available: 22 }
+        ],
+        GROCERIES: [
+            { name: 'Whole Milk', icon: '🥛', available: 19 },
+            { name: 'Fresh Bread', icon: '🍞', available: 7 },
+            { name: 'Farm Eggs', icon: '🥚', available: 50 },
+            { name: 'Natural Honey', icon: '🍯', available: 14 }
+        ],
+        FURNITURE: [
+            { name: 'Wooden Chair', icon: '🪑', available: 6 },
+            { name: 'Study Desk', icon: '🪟', available: 3 }, // Fixed broken icon text
+            { name: 'Comfortable Sofa', icon: '🛋️', available: 2 },
+            { name: 'Bedroom Wardrobe', icon: '🚪', available: 4 }
+        ]
+    };
 
-        window.addEventListener('scroll', function() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    // --- 3. NEW TABLE RENDERING ENGINE ---
+    function displayCategory(categoryName) {
+        const targetContainer = document.getElementById('displayTarget');
+        const items = storeInventory[categoryName];
+
+        // Clear old content
+        targetContainer.innerHTML = '';
+
+        // Generate department title
+        const heading = document.createElement('h1');
+        heading.className = 'display-title';
+        heading.textContent = `${categoryName} DEPARTMENT INVENTORY`;
+        targetContainer.appendChild(heading);
+
+        // Generate Table Structure
+        const table = document.createElement('table');
+        table.className = 'inventory-table'; // You can style this class in your CSS
+
+        // Create Table Header Row
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th style="text-align: center; width: 80px;">Item</th>
+                    <th style="text-align: left;">Product Name</th>
+                    <th style="text-align: right;">Available Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        `;
+
+        const tbody = table.querySelector('tbody');
+
+        // Loop through inventory items to build table rows
+        items.forEach(product => {
+            const row = document.createElement('tr');
             
-            if (scrollTop > lastScrollTop) {
-                // Scrolling down -> Hide Part 2
-                scrollHeader.classList.add('hidden');
-            } else {
-                // Scrolling up -> Show Part 2
-                scrollHeader.classList.remove('hidden');
-            }
-            
-            // Updates scroll anchor position tracker
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; 
+            // Highlight low stock items in red if availability is under 10
+            const stockStyle = product.available < 10 ? 'color: red; font-weight: bold;' : '';
+
+            row.innerHTML = `
+                <td style="text-align: center; font-size: 1.5rem;">${product.icon}</td>
+                <td>${product.name}</td>
+                <td style="text-align: right; ${stockStyle}">${product.available} units</td>
+            `;
+            tbody.appendChild(row);
         });
 
-        // --- 2. DYNAMIC ITEM DICTIONARY DATA MATRIX ---
-        const storeInventory = {
-            VEGETABLES: [
-                { name: 'Fresh Tomato', icon: '🍅' },
-                { name: 'Organic Carrot', icon: '🥕' },
-                { name: 'Green Broccoli', icon: '🥦' },
-                { name: 'Crisp Potato', icon: '🥔' }
-            ],
-            FRUITS: [
-                { name: 'Sweet Apple', icon: '🍎' },
-                { name: 'Ripe Banana', icon: '🍌' },
-                { name: 'Juicy Orange', icon: '🍊' },
-                { name: 'Fresh Grapes', icon: '🍇' }
-            ],
-            GROCERIES: [
-                { name: 'Whole Milk', icon: '🥛' },
-                { name: 'Fresh Bread', icon: '🍞' },
-                { name: 'Farm Eggs', icon: '🥚' },
-                { name: 'Natural Honey', icon: '🍯' }
-            ],
-            FURNITURE: [
-                { name: 'Wooden Chair', icon: '🪑' },
-                { name: 'Study Desk', icon: ' 테이블' },
-                { name: 'Comfortable Sofa', icon: '🛋️' },
-                { name: 'Bedroom Wardrobe', icon: '🚪' }
-            ]
-        };
+        // Inject the complete table into the viewport
+        targetContainer.appendChild(table);
+    }
+</script>
 
-        // --- 3. RENDERING ENGINE FOR PART 3 ---
-        function displayCategory(categoryName) {
-            const targetContainer = document.getElementById('displayTarget');
-            const items = storeInventory[categoryName];
-
-            // Clear old landing layout text
-            targetContainer.innerHTML = '';
-
-            // Generate header segment
-            const heading = document.createElement('h1');
-            heading.className = 'display-title';
-            heading.textContent = `${categoryName} DEPARTMENT`;
-            targetContainer.appendChild(heading);
-
-            // Generate display wrapper element
-            const grid = document.createElement('div');
-            grid.className = 'item-grid';
-
-            // Loop through inventory list and construct items into Part 3 HTML view
-            items.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <span class="product-icon">${product.icon}</span>
-                    <div>${product.name}</div>
-                `;
-                grid.appendChild(card);
-            });
-
-            targetContainer.appendChild(grid);
-        }
-    </script>
-
-</body>
+    </body>
 </html>
