@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Payment & Receipt Generation</title>
+    <style>
+        body {
+            background-color: aqua;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* Standardized side-by-side row wrapper layout */
+        .single-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Fixed structural label widths so elements align in a straight grid vertical line */
+        label {
+            font-weight: bold;
+            width: 140px; 
+            flex-shrink: 0;
+        }
+
+        input {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 200px;
+        }
+
+        /* Read-only tracking state style modifier */
+        .readonly-input {
+            background-color: #f0f0f0;
+        }
+
+        /* Horizontal alignment helper wrapper for payment entry and inline messaging */
+        .payment-message-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 7px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #555;
+            font-weight: bold;
+        }
+
+        .fetch-btn {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .pay-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            height: 31px;
+        }
+
+        /* Message configurations */
+        #message {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .success { color: green; }
+        .error { color: red; }
+
+        /* Receipt Card Styling Configuration Layout wrapper */
+        .receipt-card {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #fff;
+            border: 2px dashed #333;
+            max-width: 400px;
+            border-radius: 4px;
+        }
+        .receipt-card h3 {
+            margin-top: 0;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Student Fee Payment Panel</h2>
+    
+    <!-- Step 1: Input Search Request Component Row -->
+    <div class="single-field">
+        <label for="searchId" style="width: auto; margin-right: 15px;">Enter Student ID:</label>
+        <input type="number" id="searchId" style="margin-right: 15px;" required>
+        <button id="fetchFeesBtn" class="fetch-btn">Fetch Details</button>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Step 2: Payment Action Form (Hidden until a valid profile is loaded) -->
+    <form id="paymentForm" style="display: none;">
+        <input type="hidden" id="studentId">
+        
+        <div class="single-field">
+            <label for="username">Username:</label>
+            <input type="text" id="username" class="readonly-input" readonly>
+        </div>
+
+        <div class="single-field">
+            <label for="feesPayable">Current Balance (₹):</label>
+            <input type="text" id="feesPayable" class="readonly-input" readonly>
+        </div>
+
+        <!-- Horizontal layout row placing payment amount and message side-by-side -->
+        <div class="payment-message-row">
+            <div class="single-field" style="margin-bottom: 0;">
+                <label for="amountPaid">Amount to Pay (₹):</label>
+                <input type="number" id="amountPaid" min="1" step="0.01" required>
+            </div>
+            <button type="submit" class="pay-btn">Submit Payment</button>
+            <p id="message"></p>
+        </div>
+    </form>
+
+    <!-- Step 3: Generated Receipt Section (Hidden until transaction completes) -->
+    <div id="receiptContainer" style="display: none;">
+        <div class="receipt-card">
+            <h3>PAYMENT RECEIPT</h3>
+            <div class="single-field"><label>Receipt No:</label><span id="rNo" style="font-weight:bold; color:blue;"></span></div>
+            <div class="single-field"><label>Student ID:</label><span id="rId"></span></div>
+            <div class="single-field"><label>Username:</label><span id="rUser"></span></div>
+            <div class="single-field"><label>Amount Paid:</label><span id="rPaid" style="font-weight:bold;"></span></div>
+            <div class="single-field"><label>Remaining Balance:</label><span id="rBalance"></span></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        // 1. Look up student current balance profile status
+        document.getElementById('fetchFeesBtn').addEventListener('click', async () => {
+            const id = document.getElementById('searchId').value;
+            const msg = document.getElementById('message');
+            const form = document.getElementById('paymentForm');
+            const receiptDiv = document.getElementById('receiptContainer');
+
+            // Reset UI states
+            msg.innerText = "";
+            receiptDiv.style.display = 'none';
+
+            if (!id) return alert("Please enter a valid Student ID.");
+
+            try {
+                const response = await fetch(`${API_URL}/api/get-fees/${id}`);
+                const result = await response.json();
+
+                if (!response.ok) throw new Error(result.message || 'Fee details not found.');
+
+                // Populate Form Fields
+                document.getElementById('studentId').value = id;
+                document.getElementById('username').value = result.feeData.username;
+                document.getElementById('feesPayable').value = result.feeData.feesPayable;
+
+                form.style.display = 'block';
+            } catch (error) {
+                alert(error.message);
+                form.style.display = 'none';
+            }
+        });
+
+        // 2. Submit payment processing request transaction 
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const msg = document.getElementById('message');
+            msg.className = ""; // clear status styling classes
+            
+            const id = document.getElementById('studentId').value;
+            const username = document.getElementById('username').value;
+            const amountPaid = parseFloat(document.getElementById('amountPaid').value);
+            const currentBalance = parseFloat(document.getElementById('feesPayable').value);
+
+            // Validation: Prevent overpayment checks
+            if (amountPaid > currentBalance) {
+                msg.className = "error";
+                return msg.innerText = "Error: Payment exceeds current balance.";
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/pay-fees`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, username, amountPaid })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) throw new Error(result.message || 'Payment processing failed.');
+
+                // Display Inline Success Status Message
+                msg.className = "success";
+                msg.innerText = "Payment Successful!";
+
+                // Update updated balance input box context
+                document.getElementById('feesPayable').value = result.newBalance;
+
+                // Render Generated Receipt Component Card Values
+                document.getElementById('rNo').innerText = result.receiptNo;
+                document.getElementById('rId').innerText = id;
+                document.getElementById('rUser').innerText = username;
+                document.getElementById('rPaid').innerText = "₹" + amountPaid.toLocaleString('en-IN');
+                document.getElementById('rBalance').innerText = "₹" + result.newBalance.toLocaleString('en-IN');
+                
+                document.getElementById('receiptContainer').style.display = 'block';
+                document.getElementById('amountPaid').value = ""; // Clear payment amount field input box
+            } catch (error) {
+                msg.className = "error";
+                msg.innerText = error.message;
+            }
+        });
+    </script>
+</body>
+</html>

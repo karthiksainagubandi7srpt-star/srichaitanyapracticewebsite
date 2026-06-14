@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Confirmation</title>
+    <style>
+        body {
+            background-color: aqua;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* Forces standard labels and inputs to sit side-by-side on one line */
+        .single-field {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Standardized label width so all text boxes line up perfectly */
+        label {
+            font-weight: bold;
+            width: 110px; /* Gives labels equal horizontal spacing */
+            flex-shrink: 0; /* Prevents text from wrapping squished */
+        }
+
+        input {
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            width: 200px; /* Uniform width for text inputs */
+        }
+
+        /* Inline formatting helper for sub-items */
+        .inline-item {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Row 1: Username & Concession side-by-side */
+        .row-container {
+            display: flex;
+            gap: 40px; /* Space between the username block and concession block */
+            margin-bottom: 15px;
+        }
+
+        /* Row 2: Email and its execution buttons side-by-side */
+        .email-action-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Row 3: Age and the system status message side-by-side */
+        .age-message-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Structured styling configurations for buttons */
+        button {
+            padding: 7px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #555;
+            height: 31px;
+            font-weight: bold;
+        }
+
+        .custom-submit {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
+
+        #deletebtn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
+
+        /* Message configurations */
+        #message {
+            font-weight: bold;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Admission Confirmation</h2>
+    
+    <!-- Step 1: Find the User -->
+    <div id="searchSection" class="single-field">
+        <label for="searchId" style="width: auto; margin-right: 15px;">Enter Student ID:</label>
+        <input type="number" id="searchId" style="margin-right: 15px;" required>
+        <button id="fetchBtn" style="height: auto;">Load Student Data</button>
+    </div>
+
+    <br><hr><br>
+
+    <!-- Step 2: Edit Form (Hidden until data is loaded) -->
+    <form id="editForm" style="display: none;">
+        <input type="hidden" id="userId">
+        
+        <!-- Row 1: Username & Concession side-by-side with labels next to inputs -->
+        <div class="row-container">
+            <div class="inline-item">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="inline-item">
+                <label for="consession">Concession:</label>
+                <input type="number" id="consession" required>
+            </div>
+        </div>
+        
+        <!-- Row 2: Email with buttons beside it, label next to text box -->
+        <div class="email-action-row">
+            <div class="inline-item">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            <button type="submit" class="custom-submit">Confirm Admission</button>
+            <button type="button" id="deletebtn">Delete Data</button>
+        </div>
+        
+        <!-- Row 3: Age with label beside it, and status message next to that -->
+        <div class="age-message-row">
+            <div class="inline-item">
+                <label for="age">Age:</label>
+                <input type="tel" id="age" maxlength="2" required>
+            </div>
+            <p id="message"></p>
+        </div>
+
+        <!-- Remaining Standard Form Layout Fields (Label beside Textbox) -->
+        <div class="single-field">
+            <label for="gender">Gender:</label>
+            <input type="text" id="gender" required>
+        </div>
+
+        <div class="single-field">
+            <label for="contactNo">Contact no:</label>
+            <input type="tel" id="contactNo" maxlength="10" pattern="[0-9]{10}" required>
+        </div>
+
+        <div class="single-field">
+            <label for="score10th">Score10th:</label>
+            <input type="number" id="score10th" required>
+        </div>
+
+        <div class="single-field">
+            <label for="board">Board:</label>
+            <input type="text" id="board" required>
+        </div>
+
+        <div class="single-field">
+            <label for="address">Address:</label>
+            <input type="text" id="address" required>
+        </div>
+    </form>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        // 1. Fetch user data by ID
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            const id = document.getElementById('searchId').value;
+            const msg = document.getElementById('message');
+            if (!id) return msg.innerText = "Please enter an ID.";
+
+            try {
+                const response = await fetch(`${API_URL}/api/get-user/${id}`);
+                
+                if (!response.ok) {
+                    throw new Error('User not found.');
+                }
+
+                const { user } = await response.json();
+
+                // Populate the hidden form with database data
+                document.getElementById('userId').value = user.id;
+                document.getElementById('username').value = user.username;
+                document.getElementById('email').value = user.email;
+                document.getElementById('age').value = user.age;
+                document.getElementById('gender').value = user.gender;
+                document.getElementById('contactNo').value = user.contactNo;
+                document.getElementById('score10th').value = user.score10th;
+                document.getElementById('board').value = user.board;
+                document.getElementById('address').value = user.address;
+                
+                // Show form, clear error messages
+                document.getElementById('editForm').style.display = 'block';
+                msg.innerText = ""; 
+            } catch (error) {
+                msg.innerText = error.message;
+                document.getElementById('editForm').style.display = 'none';
+            }
+        });
+
+        // 2. Submit the updated data
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const id = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const consession = document.getElementById('consession').value; 
+            
+            try {
+                const response = await fetch(`${API_URL}/api/admission/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, consession }) 
+                });
+
+                const result = await response.json();
+                document.getElementById('message').innerText = result.message;
+            } catch (error) {
+                document.getElementById('message').innerText = 'Failed to update record.';
+            }
+        });
+
+        // 3. Delete the selected user Data
+        document.getElementById('deletebtn').addEventListener('click', async () => {
+            const id = document.getElementById('userId').value; 
+            const msg = document.getElementById('message');
+            if (!id) return msg.innerText = "No user loaded to delete.";
+
+            if (!confirm(`Are you sure you want to permanently delete user ID: ${id}?`)) return;
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Deletion failed.');
+                }
+                
+                msg.innerText = result.message; 
+                
+                // Reset form states and clean the screen
+                document.getElementById('editForm').reset();
+                document.getElementById('editForm').style.display = 'none';
+                document.getElementById('searchId').value = '';
+            } catch (error) {
+                msg.innerText = error.message;
+            }
+        });
+    </script>
+</body>
+</html>
